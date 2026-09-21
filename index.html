@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 6 - Rock Paper Scissor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Rock Paper Scissors!</h1>
+        <h3>This is a game where you try to beat the computer in a game of rock paper scissors.</h3>
+    </header>
+
+    <div class="main">
+        <div class="buttonSection">
+            <button type="button" id="rock"><img src="media/rock.png"></button>
+            <button type="button" id="paper"><img src="media/paper.png"></button>
+            <button type="button" id="scissors"><img src="media/scissors.png"></button>
+        </div>
+
+        <br>
+
+        <div class="scoreBoard">
+            <p id="scorePlayer">Wins: 0</p>
+            <p id="scoreComputer">Losses: 0</p>
+        </div>
+
+        <br>
+        
+        <div class="gameOutcome">
+            <p>Results:</p>
+            <p id="choiceReview"></p>
+            <br>
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        let playerChoice = "";
+
+        const buttonRock = document.querySelector("#rock");
+        const buttonPaper = document.querySelector("#paper");
+        const buttonScissors = document.querySelector("#scissors");
+
+        buttonRock.addEventListener("click", () => {
+            rockPaperScissor("Rock");
+        });
+        buttonPaper.addEventListener("click", () => {
+            rockPaperScissor("Paper");
+        });
+        buttonScissors.addEventListener("click", () => {
+            rockPaperScissor("Scissors");
+        });
+
+        function rockPaperScissor(choice){
+            playerChoice = choice;
+
+            //generate computer choice
+            generateComputerChoice();
+        }
+
+        let computerChoice = "";
+        
+        function generateComputerChoice(){
+            //random number from 0-2
+            let randomNumber = Math.floor(Math.random() * 3);
+            //console.log("computer choice = " + randomNumber);
+
+            switch(randomNumber){
+                case 0:
+                    computerChoice = "Rock";
+                    //console.log("case 0");
+                    break;
+                case 1:
+                    computerChoice = "Paper";
+                    //console.log("case 1");
+                    break;
+
+                case 2:
+                    computerChoice = "Scissors"
+                    //console.log("case 2");
+                    break;
+            }
+
+            printResult();
+        }
+
+        function printResult(){
+            //determine winner
+            if (computerChoice == playerChoice){
+                draw();
+            } else if (playerChoice == "Rock"){
+                if (computerChoice == "Paper"){
+                    pcWins();
+                } else {
+                    playerWins();
+                }
+            } else if (playerChoice == "Paper"){
+                if (computerChoice == "Rock"){
+                    playerWins();
+                } else {
+                    pcWins();
+                }
+            } else {
+                if (computerChoice == "Rock"){
+                    pcWins();
+                } else {
+                    playerWins();
+                }
+            }
+        }
+
+        const results = document.querySelector("#result");
+        const choiceReview = document.querySelector("#choiceReview");
+        const scorePlayerDisplay = document.querySelector("#scorePlayer");
+        const scoreComputerDisplay = document.querySelector("#scoreComputer");
+
+        let scorePlayer = 0;
+        let scoreComputer = 0;
+
+        function draw(){
+            choiceReview.textContent = `You chose ${playerChoice}, Computer chose ${computerChoice}`
+            results.textContent = "Draw"
+            results.style.color = "orange";
+        }
+
+        function playerWins(){
+            choiceReview.textContent = `You chose ${playerChoice}, Computer chose ${computerChoice}`
+            results.textContent = "you win! :D";
+            results.style.color = "green";
+
+            scorePlayer ++;
+            scorePlayerDisplay.textContent = `Wins: ${scorePlayer}`
+        }
+
+        function pcWins(){
+            choiceReview.textContent = `You chose ${playerChoice}, Computer chose ${computerChoice}`
+            results.textContent = "Computer wins :(";
+            results.style.color = "red";
+
+            scoreComputer ++;
+            scoreComputerDisplay.textContent = `Losses: ${scoreComputer}` 
+        }
+    </script>
+</body>
+</html>
