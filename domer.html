@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frata hemsida</title>
+
+    <style>
+        :root {
+            color: #263238;
+            background: #dcefeb;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 32px 16px;
+            background: linear-gradient(135deg, #dcefeb, #f4eee2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        header h1,
+        header h2 {
+            margin: 0;
+        }
+
+        header h1 {
+            color: #1f4d4a;
+            font-size: clamp(2rem, 8vw, 3rem);
+        }
+
+        header h2 {
+            margin-top: 6px;
+            color: #607d7b;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        #playerGold {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 14px;
+            color: #674d08;
+            background: #f5dda2;
+            border: 1px solid #e4c86f;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .main {
+            width: min(100%, 760px);
+            margin: 0 auto;
+            padding: 24px;
+            background: #fffdf9;
+            border: 1px solid #c6d8d2;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgb(46 79 75 / 15%);
+        }
+
+        .gameLayout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .clickerArea {
+            text-align: center;
+        }
+
+        img {
+            display: block;
+            width: min(100%, 240px);
+            margin: 0 auto 20px;
+            border-radius: 14px;
+        }
+
+        .clickerArea p {
+            margin: 0 0 6px;
+            color: #607d7b;
+            font-weight: bold;
+        }
+
+        #healthBar {
+            margin-bottom: 18px;
+            color: #1f4d4a;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        button {
+            min-width: 130px;
+            margin: 4px;
+            padding: 11px 16px;
+            color: #fffdf9;
+            background: #397c76;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 150ms ease, transform 150ms ease;
+        }
+
+        button:hover:not(:disabled) {
+            background: #28635e;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            color: #9aa8a5;
+            background: #e1e7e4;
+            cursor: not-allowed;
+        }
+
+        .inventoryArea > h2 {
+            margin: 0 0 10px;
+            padding-top: 20px;
+            color: #1f4d4a;
+            font-size: 1.2rem;
+        }
+
+        #inventory {
+            min-height: 54px;
+            padding: 8px 14px;
+            background: #edf5f1;
+            border: 1px solid #d4e4de;
+            border-radius: 8px;
+        }
+
+        .inventoryItem {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 6px 0;
+            padding: 10px 12px;
+            color: #263238;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: filter 150ms ease, transform 150ms ease;
+        }
+
+        .inventoryItem:hover {
+            filter: brightness(0.96);
+            transform: translateY(-1px);
+        }
+
+        .inventoryItem img {
+            width: 56px;
+            height: 56px;
+            flex: 0 0 56px;
+            margin: 0;
+            border: 2px solid rgb(38 50 56 / 15%);
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .inventoryQuantity {
+            margin-left: auto;
+            color: #263238;
+        }
+
+        dialog {
+            width: min(calc(100% - 32px), 380px);
+            padding: 0;
+            color: #263238;
+            background: #fffdf9;
+            border: 1px solid #c6d8d2;
+            border-radius: 14px;
+            box-shadow: 0 18px 45px rgb(38 50 56 / 30%);
+        }
+
+        dialog::backdrop {
+            background: rgb(31 77 74 / 35%);
+        }
+
+        .lootModalContent {
+            padding: 24px;
+            text-align: center;
+        }
+
+        #lootImage {
+            width: 170px;
+            height: 170px;
+            object-fit: cover;
+            margin-bottom: 16px;
+        }
+
+        #lootName {
+            margin: 0 0 16px;
+            color: #1f4d4a;
+        }
+
+        .lootStats {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .lootStat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #edf5f1;
+            border-radius: 6px;
+        }
+
+        .lootStat span:first-child {
+            color: #607d7b;
+        }
+
+        #sellLoot {
+            background: #b36b42;
+        }
+
+        #sellLoot:hover {
+            background: #925437;
+        }
+
+        @media (max-width: 640px) {
+            .gameLayout {
+                grid-template-columns: 1fr;
+            }
+
+            .inventoryArea {
+                padding-top: 20px;
+                border-top: 1px solid #d8e3df;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Domer</h1>
+        <h2>Mine the Dobber</h2>
+        <div id="playerGold">Gold: <span id="goldAmount">0</span></div>
+    </header>
+
+    <div class="main">
+        <div class="gameLayout">
+            <div class="clickerArea">
+                <img src="media/domer.jpg" alt="Domer">
+                <p>Dobber health</p>
+                <div id="healthBar">10</div>
+                <button id="buttonGober">Gober</button>
+                <button id="buttonGetLoot" disabled>get item!</button>
+            </div>
+
+            <div class="inventoryArea">
+                <h2>Domber inventory</h2>
+                <div id="inventory">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dialog id="lootModal">
+        <div class="lootModalContent">
+            <img id="lootImage" alt="">
+            <h2 id="lootName"></h2>
+            <div class="lootStats">
+                <div class="lootStat">
+                    <span>Rarity</span>
+                    <strong id="lootRarity"></strong>
+                </div>
+                <div class="lootStat">
+                    <span>Price</span>
+                    <strong><span id="lootPrice"></span> gold</strong>
+                </div>
+            </div>
+            <button id="sellLoot">Sell for gold</button>
+            <button id="closeLootModal">Close</button>
+        </div>
+    </dialog>
+
+    
+    <script>
+        var health = 10;
+        const inventoryStorageKey = "domerInventory";
+        const goldStorageKey = "domerGold";
+        var playerGold = Number(localStorage.getItem(goldStorageKey)) || 0;
+        const healthBar = document.getElementById("healthBar");
+        const buttonGober = document.getElementById("buttonGober");
+        const buttonGetLoot = document.getElementById("buttonGetLoot");
+        const inventory = document.getElementById("inventory");
+        const inventoryItems = new Map();
+        const rarityOrder = {
+            legendary: 0,
+            rare: 1,
+            uncommon: 2,
+            common: 3
+        };
+        const lootModal = document.getElementById("lootModal");
+        const lootImage = document.getElementById("lootImage");
+        const lootName = document.getElementById("lootName");
+        const lootRarity = document.getElementById("lootRarity");
+        const lootPrice = document.getElementById("lootPrice");
+        const closeLootModal = document.getElementById("closeLootModal");
+        const sellLoot = document.getElementById("sellLoot");
+        const goldAmount = document.getElementById("goldAmount");
+        var selectedItem = null;
+
+        goldAmount.textContent = playerGold;
+
+        buttonGober.addEventListener("click", goberMine);
+        buttonGetLoot.addEventListener("click", getRandomLoot);
+        closeLootModal.addEventListener("click", () => lootModal.close());
+        sellLoot.addEventListener("click", sellSelectedItem);
+        lootModal.addEventListener("click", (event) => {
+            if (event.target === lootModal){
+                lootModal.close();
+            }
+        });
+
+        function goberMine(){
+            if (health > 0){
+                health = health - 1;
+                healthBar.textContent = health;
+
+                if (health === 0){
+                    buttonGober.disabled = true;
+                    buttonGetLoot.disabled = false;
+                }
+            }
+        }
+
+        function getRandomLoot(){
+            if (health !== 0){
+                return;
+            }
+
+            const totalWeight = lootTable.reduce(
+                (sum, item) => sum + item.weight,
+                0
+            );
+
+            let random = Math.random() * totalWeight;
+
+            for(const item of lootTable){
+                random -= item.weight;
+
+                if (random <= 0){
+                    addToInventory(item);
+                    showLootModal(item);
+
+                    health = 10;
+                    healthBar.textContent = health;
+                    buttonGober.disabled = false;
+                    buttonGetLoot.disabled = true;
+                    break;
+                }
+            }
+        }
+
+        function addToInventory(item, quantity = 1, save = true){
+            const existingItem = inventoryItems.get(item.name);
+
+            if (existingItem){
+                existingItem.quantity += quantity;
+                existingItem.quantityElement.textContent = `x${existingItem.quantity}`;
+                sortInventory();
+                if (save){
+                    saveInventory();
+                }
+                return;
+            }
+
+            const collectedItem = document.createElement("div");
+            const collectedImage = document.createElement("img");
+            const collectedName = document.createElement("span");
+            const collectedQuantity = document.createElement("span");
+
+            collectedItem.className = "inventoryItem";
+            collectedItem.style.backgroundColor = item.color;
+            collectedImage.src = item.image;
+            collectedImage.alt = item.name;
+            collectedName.textContent = item.name;
+            collectedQuantity.className = "inventoryQuantity";
+            collectedQuantity.textContent = `x${quantity}`;
+            collectedItem.append(collectedImage, collectedName, collectedQuantity);
+            collectedItem.addEventListener("click", () => showLootModal(item));
+            inventory.appendChild(collectedItem);
+            inventoryItems.set(item.name, {
+                quantity,
+                item,
+                element: collectedItem,
+                quantityElement: collectedQuantity
+            });
+            sortInventory();
+            if (save){
+                saveInventory();
+            }
+        }
+
+        function sortInventory(){
+            const sortedItems = [...inventoryItems.values()].sort((first, second) => {
+                const rarityDifference = rarityOrder[first.item.rarity] - rarityOrder[second.item.rarity];
+
+                if (rarityDifference !== 0){
+                    return rarityDifference;
+                }
+
+                return first.item.name.localeCompare(second.item.name);
+            });
+
+            for (const inventoryItem of sortedItems){
+                inventory.appendChild(inventoryItem.element);
+            }
+        }
+
+        function saveInventory(){
+            const savedInventory = [...inventoryItems].map(([name, item]) => ({
+                name,
+                quantity: item.quantity
+            }));
+            localStorage.setItem(inventoryStorageKey, JSON.stringify(savedInventory));
+        }
+
+        function saveGold(){
+            localStorage.setItem(goldStorageKey, playerGold);
+            goldAmount.textContent = playerGold;
+        }
+
+        function loadInventory(){
+            const savedInventory = JSON.parse(localStorage.getItem(inventoryStorageKey) || "[]");
+
+            for (const savedItem of savedInventory){
+                const item = lootTable.find((lootItem) => lootItem.name === savedItem.name);
+
+                if (item && Number.isInteger(savedItem.quantity) && savedItem.quantity > 0){
+                    addToInventory(item, savedItem.quantity, false);
+                }
+            }
+        }
+
+        function showLootModal(item){
+            selectedItem = item;
+            lootModal.style.backgroundColor = item.color;
+            lootImage.src = item.image;
+            lootImage.alt = item.name;
+            lootName.textContent = item.name;
+            lootRarity.textContent = item.rarity;
+            lootPrice.textContent = item.price;
+            sellLoot.textContent = `Sell for ${item.price} gold`;
+            lootModal.showModal();
+        }
+
+        function sellSelectedItem(){
+            if (!selectedItem){
+                return;
+            }
+
+            const inventoryItem = inventoryItems.get(selectedItem.name);
+
+            if (!inventoryItem){
+                return;
+            }
+
+            inventoryItem.quantity -= 1;
+            playerGold += selectedItem.price;
+            saveGold();
+
+            if (inventoryItem.quantity === 0){
+                inventoryItem.element.remove();
+                inventoryItems.delete(selectedItem.name);
+            } else {
+                inventoryItem.quantityElement.textContent = `x${inventoryItem.quantity}`;
+            }
+
+            saveInventory();
+            lootModal.close();
+            selectedItem = null;
+        }
+
+        //adding loot 
+        const lootTable = [
+            //common
+            { name: "yellow baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/yellow_domer.png"},
+            { name: "blue baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/blue_domer.png"},
+            { name: "red baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/red_domer.png"},
+
+            //uncommon
+            { name: "bart", rarity: "uncommon", price: 20, weight: 12, color: "#f5dda2", image: "media/bart.png"},
+            { name: "blart", rarity: "common", price: 25, weight: 10, color: "#c9e6c5", image: "media/blart.png"},
+            { name: "bar", rarity: "common", price: 25, weight: 10, color: "#c9e6c5", image: "media/bar.png"},
+
+            //rare
+            { name: "remod", rarity: "rare", price: 70, weight: 3, color: "#b9d7ef", image: "media/remod.png"},
+            { name: "boner", rarity: "rare", price: 80, weight: 2, color: "#b9d7ef", image: "media/boner.png"},
+
+            //legendary
+            { name: "legendary domer", rarity: "legendary", price: 1000, weight: 0.1, color: "#e3b7e8", image: "media/legendary_domer.png"}
+
+        ];
+
+        loadInventory();
+    </script>
+
+</body>
+</html>
