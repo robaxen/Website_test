@@ -56,6 +56,20 @@
             font-weight: bold;
         }
 
+        #statsButton {
+            display: block;
+            margin: 12px auto 0;
+            padding: 8px 14px;
+            color: #1f4d4a;
+            background: #c9e7df;
+            border: 1px solid #9fcfc2;
+            font-size: 0.9rem;
+        }
+
+        #statsButton:hover:not(:disabled) {
+            background: #a9d7cc;
+        }
+
         .main {
             width: min(100%, 760px);
             margin: 0 auto;
@@ -71,6 +85,139 @@
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
             gap: 24px;
             align-items: start;
+        }
+
+        .shop {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #d8e3df;
+        }
+
+        .shop h2 {
+            margin: 0 0 6px;
+            color: #1f4d4a;
+            font-size: 1.2rem;
+        }
+
+        .shopIntro {
+            margin: 0 0 16px;
+            color: #607d7b;
+        }
+
+        .shopGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+        }
+
+        .shopItem {
+            display: flex;
+            min-height: 154px;
+            flex-direction: column;
+            padding: 14px;
+            background: #edf5f1;
+            border: 1px solid #d4e4de;
+            border-radius: 8px;
+        }
+
+        .shopItem h3 {
+            margin: 0 0 5px;
+            color: #1f4d4a;
+            font-size: 1rem;
+        }
+
+        .shopItem p {
+            flex: 1;
+            margin: 0 0 12px;
+            color: #607d7b;
+            font-size: 0.9rem;
+        }
+
+        .shopItem button {
+            width: 100%;
+            margin: 0;
+            padding: 9px 10px;
+            font-size: 0.9rem;
+        }
+
+        #shopStatus {
+            min-height: 1.2em;
+            margin: 14px 0 0;
+            color: #607d7b;
+            font-size: 0.9rem;
+        }
+
+        #adminTools {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #d8e3df;
+        }
+
+        #adminTools h2 {
+            margin: 0 0 6px;
+            color: #1f4d4a;
+            font-size: 1.2rem;
+        }
+
+        #adminTools table {
+            width: 100%;
+            margin-top: 12px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        #adminTools th,
+        #adminTools td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #d8e3df;
+        }
+
+        #adminTools th {
+            color: #607d7b;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        body.theme-midnight {
+            color: #e8f1ff;
+            background: linear-gradient(135deg, #111b36, #263b62);
+        }
+
+        body.theme-midnight .main {
+            background: #172542;
+            border-color: #4c6d9d;
+        }
+
+        body.theme-midnight h1,
+        body.theme-midnight h2,
+        body.theme-midnight .shopItem h3,
+        body.theme-midnight #healthBar {
+            color: #c8e5ff;
+        }
+
+        body.theme-midnight .shopItem,
+        body.theme-midnight #inventory,
+        body.theme-midnight .lootStat {
+            background: #22365a;
+            border-color: #4c6d9d;
+        }
+
+        body.theme-sunset {
+            background: linear-gradient(135deg, #f6c58d, #d87873 48%, #553b68);
+        }
+
+        body.theme-sunset .main {
+            border-color: #d58a6d;
+        }
+
+        body.frame-neon .main {
+            border: 3px solid #e247a2;
+            box-shadow: 0 0 24px rgb(226 71 162 / 50%), 0 12px 30px rgb(46 79 75 / 15%);
+        }
+
+        body.frame-gold .main {
+            border: 3px solid #c7972c;
+            box-shadow: 0 0 18px rgb(199 151 44 / 40%), 0 12px 30px rgb(46 79 75 / 15%);
         }
 
         .clickerArea {
@@ -95,6 +242,18 @@
             color: #1f4d4a;
             font-size: 2rem;
             font-weight: bold;
+        }
+
+        #tapFeedback {
+            display: block;
+            min-height: 1.3em;
+            color: #607d7b;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        #tapFeedback {
+            color: #b36b42;
         }
 
         button {
@@ -135,6 +294,23 @@
             background: #edf5f1;
             border: 1px solid #d4e4de;
             border-radius: 8px;
+        }
+
+        .dailyMission {
+            margin-top: 14px;
+            padding: 10px;
+            background: #f3f7f4;
+            border: 1px solid #d8e3df;
+            border-radius: 6px;
+            color: #607d7b;
+            font-size: 0.85rem;
+        }
+
+        .dailyMission button {
+            width: 100%;
+            margin: 8px 0 0;
+            padding: 8px;
+            font-size: 0.85rem;
         }
 
         .inventoryItem {
@@ -220,12 +396,38 @@
             color: #607d7b;
         }
 
+        .playerStats {
+            display: grid;
+            gap: 8px;
+            margin: 0 0 18px;
+        }
+
+        .playerStat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: #edf5f1;
+            border-radius: 6px;
+        }
+
+        .playerStat span:first-child {
+            color: #607d7b;
+        }
+
         #sellLoot {
             background: #b36b42;
         }
 
         #sellLoot:hover {
             background: #925437;
+        }
+
+        #sellAllLoot {
+            background: #8c4e35;
+        }
+
+        #sellAllLoot:hover {
+            background: #713d2b;
         }
 
         @media (max-width: 640px) {
@@ -244,8 +446,9 @@
 <body>
     <header>
         <h1>Domer</h1>
-        <h2>Mine the Dobber</h2>
-        <div id="playerGold">Gold: <span id="goldAmount">0</span></div>
+        <h2>KILL DOBBER</h2>
+        <div id="playerGold">Coins: <span id="goldAmount">0</span></div>
+        <button id="statsButton" type="button">View stats</button>
     </header>
 
     <div class="main">
@@ -253,7 +456,8 @@
             <div class="clickerArea">
                 <img src="media/domer.jpg" alt="Domer">
                 <p>Dobber health</p>
-                <div id="healthBar">10</div>
+                <div id="healthBar">100</div>
+                <span id="tapFeedback" role="status"></span>
                 <button id="buttonGober">Gober</button>
                 <button id="buttonGetLoot" disabled>get item!</button>
             </div>
@@ -263,8 +467,82 @@
                 <div id="inventory">
                     
                 </div>
+                <div class="dailyMission">
+                    <strong>Daily mission</strong>
+                    <div id="dailyMissionText">Mine 5 Domers: 0 / 5</div>
+                    <button id="claimDailyMission" type="button" disabled>Claim 100 coins</button>
+                </div>
             </div>
         </div>
+
+        <section class="shop" aria-labelledby="shopTitle">
+            <h2 id="shopTitle">Domer shop</h2>
+            <p class="shopIntro">Spend coins on stronger taps and style upgrades. Your purchases persist between visits.</p>
+            <div class="shopGrid">
+                <article class="shopItem">
+                    <h3>Heavy Swing</h3>
+                    <p>Deal 1 extra damage per tap. Buy it repeatedly.</p>
+                    <button class="shopButton" data-shop-item="tapPower" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Pocket Drill</h3>
+                    <p>Automatically deals 1 damage every second while mining.</p>
+                    <button class="shopButton" data-shop-item="autoTap" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Lucky Strike</h3>
+                    <p>Increase your chance to deal double damage.</p>
+                    <button class="shopButton" data-shop-item="critChance" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Coin Press</h3>
+                    <p>Earn more coins whenever you sell an item.</p>
+                    <button class="shopButton" data-shop-item="coinMultiplier" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Collector's Lens</h3>
+                    <p>Improve the odds of finding uncommon or better items.</p>
+                    <button class="shopButton" data-shop-item="luck" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Midnight Mode</h3>
+                    <p>Equip a deep blue night theme for the whole page.</p>
+                    <button class="shopButton" data-shop-item="midnight" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Sunset Mode</h3>
+                    <p>Equip a warm sunset theme with a bold horizon glow.</p>
+                    <button class="shopButton" data-shop-item="sunset" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Neon Frame</h3>
+                    <p>Equip a bright pink neon border around your game.</p>
+                    <button class="shopButton" data-shop-item="neonFrame" type="button"></button>
+                </article>
+                <article class="shopItem">
+                    <h3>Golden Frame</h3>
+                    <p>Equip a polished gold border around your game.</p>
+                    <button class="shopButton" data-shop-item="goldFrame" type="button"></button>
+                </article>
+            </div>
+            <p id="shopStatus" role="status"></p>
+        </section>
+
+        <!-- REMOVE ADMIN TOOLS BEFORE DEPLOYING -->
+        <section id="adminTools" hidden aria-labelledby="adminToolsTitle">
+            <h2 id="adminToolsTitle">Admin tools</h2>
+            <p class="shopIntro">Developer-only controls. Open this page with the #admin URL hash.</p>
+            <button id="resetProgress" type="button">Reset all progress</button>
+            <button id="simulateRarities" type="button">Test rarity odds</button>
+            <table>
+                <thead>
+                    <tr><th>Rarity</th><th>Count</th><th>Observed</th></tr>
+                </thead>
+                <tbody id="adminRarityResults"></tbody>
+            </table>
+        </section>
+        <!-- END REMOVE ADMIN TOOLS -->
+
     </div>
 
     <dialog id="lootModal">
@@ -282,26 +560,99 @@
                 </div>
             </div>
             <button id="sellLoot">Sell for gold</button>
+            <button id="sellAllLoot">Sell all</button>
             <button id="closeLootModal">Close</button>
+        </div>
+    </dialog>
+
+    <dialog id="statsModal">
+        <div class="lootModalContent">
+            <h2>Player stats</h2>
+            <div class="playerStats">
+                <div class="playerStat">
+                    <span>Domers killed</span>
+                    <strong id="statsDomersKilled">0</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Gober taps</span>
+                    <strong id="statsGoberTaps">0</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Unique items</span>
+                    <strong id="statsUniqueItems">0 / 0</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Critical hits</span>
+                    <strong id="statsCriticalHits">0</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Coins</span>
+                    <strong id="statsCoins">0</strong>
+                </div>
+            </div>
+            <button id="closeStatsModal" type="button">Close</button>
         </div>
     </dialog>
 
     
     <script>
-        var health = 10;
+        const maxHealth = 100;
+        var health = maxHealth;
         const inventoryStorageKey = "domerInventory";
         const goldStorageKey = "domerGold";
-        var playerGold = Number(localStorage.getItem(goldStorageKey)) || 0;
+        const shopStorageKey = "domerShop";
+        const saveStorageKey = "domerSave";
+        const defaultShopState = {
+            tapPower: 0,
+            autoTap: false,
+            critChance: 0,
+            coinMultiplier: 0,
+            luck: 0,
+            cosmetics: [],
+            theme: "default",
+            frame: "default"
+        };
+        const defaultProgressState = {
+            totalMined: 0,
+            totalTaps: 0,
+            criticalHits: 0,
+            uniqueItems: [],
+            dailyDate: "",
+            dailyMined: 0,
+            dailyClaimed: false
+        };
+        const legacyShopState = parseSave(localStorage.getItem(shopStorageKey));
+        const savedGame = parseSave(localStorage.getItem(saveStorageKey));
+        const savedProgress = savedGame && savedGame.progress ? savedGame.progress : {};
+        var playerGold = savedGame && Number.isFinite(savedGame.coins) ? savedGame.coins : Number(localStorage.getItem(goldStorageKey)) || 0;
+        var shopState = {
+            ...defaultShopState,
+            ...(savedGame ? savedGame.shop : legacyShopState || {})
+        };
+        var progressState = {
+            ...defaultProgressState,
+            totalMined: Number(savedProgress.totalMined) || 0,
+            totalTaps: Number(savedProgress.totalTaps) || 0,
+            criticalHits: Number(savedProgress.criticalHits) || 0,
+            uniqueItems: Array.isArray(savedProgress.uniqueItems) ? savedProgress.uniqueItems : [],
+            dailyDate: typeof savedProgress.dailyDate === "string" ? savedProgress.dailyDate : "",
+            dailyMined: Number(savedProgress.dailyMined) || 0,
+            dailyClaimed: savedProgress.dailyClaimed === true
+        };
         const healthBar = document.getElementById("healthBar");
         const buttonGober = document.getElementById("buttonGober");
         const buttonGetLoot = document.getElementById("buttonGetLoot");
         const inventory = document.getElementById("inventory");
+        const tapFeedback = document.getElementById("tapFeedback");
+        const dailyMissionText = document.getElementById("dailyMissionText");
+        const claimDailyMission = document.getElementById("claimDailyMission");
         const inventoryItems = new Map();
         const rarityOrder = {
             legendary: 0,
-            rare: 1,
-            uncommon: 2,
-            common: 3
+            epic: 1,
+            rare: 2,
+            uncommon: 3,
+            common: 4
         };
         const lootModal = document.getElementById("lootModal");
         const lootImage = document.getElementById("lootImage");
@@ -310,30 +661,87 @@
         const lootPrice = document.getElementById("lootPrice");
         const closeLootModal = document.getElementById("closeLootModal");
         const sellLoot = document.getElementById("sellLoot");
+        const sellAllLoot = document.getElementById("sellAllLoot");
         const goldAmount = document.getElementById("goldAmount");
+        const shopStatus = document.getElementById("shopStatus");
+        const shopButtons = document.querySelectorAll(".shopButton");
+        const statsButton = document.getElementById("statsButton");
+        const statsModal = document.getElementById("statsModal");
+        const closeStatsModal = document.getElementById("closeStatsModal");
+        const statsDomersKilled = document.getElementById("statsDomersKilled");
+        const statsGoberTaps = document.getElementById("statsGoberTaps");
+        const statsUniqueItems = document.getElementById("statsUniqueItems");
+        const statsCriticalHits = document.getElementById("statsCriticalHits");
+        const statsCoins = document.getElementById("statsCoins");
+        const adminTools = document.getElementById("adminTools");
+        const resetProgress = document.getElementById("resetProgress");
+        const simulateRarities = document.getElementById("simulateRarities");
+        const adminRarityResults = document.getElementById("adminRarityResults");
         var selectedItem = null;
 
+        function parseSave(value){
+            try {
+                return value ? JSON.parse(value) : null;
+            } catch (error){
+                return null;
+            }
+        }
+
+        if (window.location.hash.toLowerCase() === "#admin"){
+            adminTools.hidden = false;
+        }
+
         goldAmount.textContent = playerGold;
+        ensureDailyMission();
+        renderDailyMission();
 
         buttonGober.addEventListener("click", goberMine);
         buttonGetLoot.addEventListener("click", getRandomLoot);
+        shopButtons.forEach((button) => button.addEventListener("click", () => buyShopItem(button.dataset.shopItem)));
         closeLootModal.addEventListener("click", () => lootModal.close());
         sellLoot.addEventListener("click", sellSelectedItem);
+        sellAllLoot.addEventListener("click", sellAllSelectedLoot);
+        statsButton.addEventListener("click", showPlayerStats);
+        closeStatsModal.addEventListener("click", () => statsModal.close());
+        resetProgress.addEventListener("click", resetAllProgress);
+        simulateRarities.addEventListener("click", runRaritySimulation);
+        claimDailyMission.addEventListener("click", claimDailyReward);
         lootModal.addEventListener("click", (event) => {
             if (event.target === lootModal){
                 lootModal.close();
             }
         });
+        statsModal.addEventListener("click", (event) => {
+            if (event.target === statsModal){
+                statsModal.close();
+            }
+        });
 
         function goberMine(){
-            if (health > 0){
-                health = health - 1;
-                healthBar.textContent = health;
+            progressState.totalTaps += 1;
+            const isCritical = Math.random() < shopState.critChance * 0.05;
+            const damage = (1 + shopState.tapPower) * (isCritical ? 2 : 1);
+            if (isCritical){
+                progressState.criticalHits += 1;
+                tapFeedback.textContent = `Critical hit! ${damage} damage`;
+            } else {
+                tapFeedback.textContent = `${damage} damage`;
+            }
+            damageDomer(damage);
+            saveGame();
+        }
 
-                if (health === 0){
-                    buttonGober.disabled = true;
-                    buttonGetLoot.disabled = false;
-                }
+        function damageDomer(damage){
+            if (health <= 0){
+                return;
+            }
+
+            health = Math.max(0, health - damage);
+            healthBar.textContent = health;
+
+            if (health === 0){
+                buttonGober.disabled = true;
+                buttonGetLoot.disabled = false;
             }
         }
 
@@ -342,30 +750,180 @@
                 return;
             }
 
-            const totalWeight = lootTable.reduce(
-                (sum, item) => sum + item.weight,
-                0
-            );
+            const item = pickRandomLoot();
+            addToInventory(item);
+            showLootModal(item);
+            progressState.totalMined += 1;
+            if (!progressState.uniqueItems.includes(item.name)){
+                progressState.uniqueItems.push(item.name);
+            }
+            progressState.dailyMined += 1;
+            renderDailyMission();
+            saveGame();
 
-            let random = Math.random() * totalWeight;
+            health = maxHealth;
+            healthBar.textContent = health;
+            buttonGober.disabled = false;
+            buttonGetLoot.disabled = true;
+        }
 
-            for(const item of lootTable){
-                random -= item.weight;
+        const shopItems = {
+            tapPower: {
+                getCost: () => 40 + shopState.tapPower * 30,
+                buy: () => shopState.tapPower < 10 ? (shopState.tapPower += 1, true) : false,
+                label: () => shopState.tapPower >= 10 ? "Max level" : `Buy for ${40 + shopState.tapPower * 30} coins`
+            },
+            autoTap: {
+                cost: 250,
+                buy: () => {
+                    if (shopState.autoTap) return false;
+                    shopState.autoTap = true;
+                    return true;
+                },
+                label: () => shopState.autoTap ? "Owned" : "Buy for 250 coins"
+            },
+            critChance: {
+                getCost: () => 80 + shopState.critChance * 60,
+                buy: () => shopState.critChance < 5 ? (shopState.critChance += 1, true) : false,
+                label: () => shopState.critChance >= 5 ? "Max level" : `Buy for ${80 + shopState.critChance * 60} coins`
+            },
+            coinMultiplier: {
+                getCost: () => 100 + shopState.coinMultiplier * 75,
+                buy: () => shopState.coinMultiplier < 5 ? (shopState.coinMultiplier += 1, true) : false,
+                label: () => shopState.coinMultiplier >= 5 ? "Max level" : `Buy for ${100 + shopState.coinMultiplier * 75} coins`
+            },
+            luck: {
+                getCost: () => 150 + shopState.luck * 100,
+                buy: () => shopState.luck < 5 ? (shopState.luck += 1, true) : false,
+                label: () => shopState.luck >= 5 ? "Max level" : `Buy for ${150 + shopState.luck * 100} coins`
+            },
+            midnight: { cost: 120, cosmetic: "midnight", type: "theme", label: () => "Buy for 120 coins" },
+            sunset: { cost: 160, cosmetic: "sunset", type: "theme", label: () => "Buy for 160 coins" },
+            neonFrame: { cost: 220, cosmetic: "neon", type: "frame", label: () => "Buy for 220 coins" },
+            goldFrame: { cost: 180, cosmetic: "gold", type: "frame", label: () => "Buy for 180 coins" }
+        };
 
-                if (random <= 0){
-                    addToInventory(item);
-                    showLootModal(item);
+        function saveShop(){
+            localStorage.setItem(shopStorageKey, JSON.stringify(shopState));
+            saveGame();
+        }
 
-                    health = 10;
-                    healthBar.textContent = health;
-                    buttonGober.disabled = false;
-                    buttonGetLoot.disabled = true;
-                    break;
-                }
+        function ownsCosmetic(item){
+            return shopState.cosmetics.includes(item.cosmetic);
+        }
+
+        function buyShopItem(itemId){
+            const item = shopItems[itemId];
+
+            if (!item){
+                return;
+            }
+
+            if (item.cosmetic && ownsCosmetic(item)){
+                equipCosmetic(item);
+                return;
+            }
+
+            const cost = item.getCost ? item.getCost() : item.cost;
+            if (playerGold < cost){
+                shopStatus.textContent = `You need ${cost - playerGold} more coins.`;
+                return;
+            }
+
+            if (item.buy && !item.buy()){
+                shopStatus.textContent = "That upgrade is already maxed out.";
+                updateShopButtons();
+                return;
+            }
+
+            if (item.cosmetic){
+                shopState.cosmetics.push(item.cosmetic);
+                equipCosmetic(item);
+            }
+
+            playerGold -= cost;
+            saveGold();
+            saveShop();
+            updateShopButtons();
+            shopStatus.textContent = `Purchased ${itemId}.`;
+        }
+
+        function equipCosmetic(item){
+            if (item.type === "theme"){
+                shopState.theme = item.cosmetic;
+                document.body.classList.remove("theme-midnight", "theme-sunset");
+                document.body.classList.add(`theme-${item.cosmetic}`);
+            } else {
+                shopState.frame = item.cosmetic;
+                document.body.classList.remove("frame-neon", "frame-gold");
+                document.body.classList.add(`frame-${item.cosmetic}`);
+            }
+            saveShop();
+            updateShopButtons();
+            shopStatus.textContent = `Equipped ${item.cosmetic}.`;
+        }
+
+        function applySavedCosmetics(){
+            if (shopState.theme !== "default"){
+                document.body.classList.add(`theme-${shopState.theme}`);
+            }
+            if (shopState.frame !== "default"){
+                document.body.classList.add(`frame-${shopState.frame}`);
             }
         }
 
+        function updateShopButtons(){
+            shopButtons.forEach((button) => {
+                const item = shopItems[button.dataset.shopItem];
+                if (item.cosmetic && ownsCosmetic(item)){
+                    const equipped = (item.type === "theme" && shopState.theme === item.cosmetic) ||
+                        (item.type === "frame" && shopState.frame === item.cosmetic);
+                    button.textContent = equipped ? "Equipped" : "Equip";
+                    button.disabled = equipped;
+                } else {
+                    button.textContent = item.label();
+                    button.disabled = itemIdIsMaxed(item);
+                }
+            });
+        }
+
+        function itemIdIsMaxed(item){
+            return item === shopItems.tapPower && shopState.tapPower >= 10 ||
+                item === shopItems.autoTap && shopState.autoTap ||
+                item === shopItems.critChance && shopState.critChance >= 5 ||
+                item === shopItems.coinMultiplier && shopState.coinMultiplier >= 5 ||
+                item === shopItems.luck && shopState.luck >= 5;
+        }
+
+        setInterval(() => {
+            if (shopState.autoTap){
+                damageDomer(1);
+            }
+        }, 1000);
+
+        function pickRandomLoot(){
+            const weightedLootTable = lootTable.map((item) => ({
+                ...item,
+                weight: item.weight * (shopState.luck > 0 && item.rarity !== "common" ? 1 + shopState.luck * 0.15 : 1)
+            }));
+            const totalWeight = weightedLootTable.reduce((sum, item) => sum + item.weight, 0);
+            let random = Math.random() * totalWeight;
+
+            for (const item of weightedLootTable){
+                random -= item.weight;
+                if (random <= 0){
+                    return lootTable.find((lootItem) => lootItem.name === item.name);
+                }
+            }
+
+            return lootTable[lootTable.length - 1];
+        }
+
         function addToInventory(item, quantity = 1, save = true){
+            if (!progressState.uniqueItems.includes(item.name)){
+                progressState.uniqueItems.push(item.name);
+            }
+
             const existingItem = inventoryItems.get(item.name);
 
             if (existingItem){
@@ -391,7 +949,7 @@
             collectedQuantity.className = "inventoryQuantity";
             collectedQuantity.textContent = `x${quantity}`;
             collectedItem.append(collectedImage, collectedName, collectedQuantity);
-            collectedItem.addEventListener("click", () => showLootModal(item));
+            collectedItem.addEventListener("click", () => showLootModal(item, true));
             inventory.appendChild(collectedItem);
             inventoryItems.set(item.name, {
                 quantity,
@@ -432,10 +990,97 @@
         function saveGold(){
             localStorage.setItem(goldStorageKey, playerGold);
             goldAmount.textContent = playerGold;
+            saveGame();
+        }
+
+        function saveGame(){
+            localStorage.setItem(saveStorageKey, JSON.stringify({
+                version: 1,
+                coins: playerGold,
+                shop: shopState,
+                progress: progressState,
+                inventory: [...inventoryItems].map(([name, item]) => ({
+                    name,
+                    quantity: item.quantity
+                }))
+            }));
+        }
+
+        function showPlayerStats(){
+            statsDomersKilled.textContent = progressState.totalMined;
+            statsGoberTaps.textContent = progressState.totalTaps;
+            statsUniqueItems.textContent = `${progressState.uniqueItems.length} / ${lootTable.length}`;
+            statsCriticalHits.textContent = progressState.criticalHits;
+            statsCoins.textContent = playerGold;
+            statsModal.showModal();
+        }
+
+        function todayKey(){
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function ensureDailyMission(){
+            if (progressState.dailyDate !== todayKey()){
+                progressState.dailyDate = todayKey();
+                progressState.dailyMined = 0;
+                progressState.dailyClaimed = false;
+            }
+        }
+
+        function renderDailyMission(){
+            const target = 5;
+            const progress = Math.min(target, progressState.dailyMined);
+            dailyMissionText.textContent = progressState.dailyClaimed
+                ? "Complete! Come back tomorrow for a new mission."
+                : `Mine ${target} Domers: ${progress} / ${target}`;
+            claimDailyMission.disabled = progress < target || progressState.dailyClaimed;
+        }
+
+        function claimDailyReward(){
+            if (progressState.dailyMined < 5 || progressState.dailyClaimed){
+                return;
+            }
+
+            progressState.dailyClaimed = true;
+            playerGold += 100;
+            saveGold();
+            renderDailyMission();
+            tapFeedback.textContent = "Daily mission complete! +100 coins";
+            saveGame();
+        }
+
+        function resetAllProgress(){
+            if (!window.confirm("Delete all Domer progress? This cannot be undone.")){
+                return;
+            }
+
+            localStorage.removeItem(inventoryStorageKey);
+            localStorage.removeItem(goldStorageKey);
+            localStorage.removeItem(shopStorageKey);
+            localStorage.removeItem(saveStorageKey);
+            window.location.reload();
+        }
+
+        function runRaritySimulation(){
+            const rarities = ["common", "uncommon", "rare", "epic", "legendary"];
+            const results = rarities.reduce((counts, rarity) => {
+                counts[rarity] = 0;
+                return counts;
+            }, {});
+
+            for (let generation = 0; generation < 1000; generation++){
+                results[pickRandomLoot().rarity] += 1;
+            }
+
+            adminRarityResults.innerHTML = rarities.map((rarity) => `
+                <tr><td>${rarity}</td><td>${results[rarity]}</td><td>${(results[rarity] / 10).toFixed(1)}%</td></tr>
+            `).join("");
         }
 
         function loadInventory(){
-            const savedInventory = JSON.parse(localStorage.getItem(inventoryStorageKey) || "[]");
+            const savedInventory = savedGame && Array.isArray(savedGame.inventory)
+                ? savedGame.inventory
+                : parseSave(localStorage.getItem(inventoryStorageKey)) || [];
 
             for (const savedItem of savedInventory){
                 const item = lootTable.find((lootItem) => lootItem.name === savedItem.name);
@@ -446,7 +1091,7 @@
             }
         }
 
-        function showLootModal(item){
+        function showLootModal(item, fromInventory = false){
             selectedItem = item;
             lootModal.style.backgroundColor = item.color;
             lootImage.src = item.image;
@@ -455,6 +1100,8 @@
             lootRarity.textContent = item.rarity;
             lootPrice.textContent = item.price;
             sellLoot.textContent = `Sell for ${item.price} gold`;
+            sellLoot.hidden = !fromInventory;
+            sellAllLoot.hidden = !fromInventory;
             lootModal.showModal();
         }
 
@@ -470,7 +1117,7 @@
             }
 
             inventoryItem.quantity -= 1;
-            playerGold += selectedItem.price;
+            playerGold += getSellValue(selectedItem);
             saveGold();
 
             if (inventoryItem.quantity === 0){
@@ -485,29 +1132,75 @@
             selectedItem = null;
         }
 
+        function sellAllSelectedLoot(){
+            if (!selectedItem){
+                return;
+            }
+
+            const inventoryItem = inventoryItems.get(selectedItem.name);
+
+            if (!inventoryItem){
+                return;
+            }
+
+            playerGold += getSellValue(selectedItem) * inventoryItem.quantity;
+            inventoryItem.element.remove();
+            inventoryItems.delete(selectedItem.name);
+            saveGold();
+            saveInventory();
+            lootModal.close();
+            selectedItem = null;
+        }
+
+        function getSellValue(item){
+            return Math.round(item.price * (1 + shopState.coinMultiplier * 0.2));
+        }
+
         //adding loot 
         const lootTable = [
             //common
-            { name: "yellow baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/yellow_domer.png"},
-            { name: "blue baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/blue_domer.png"},
-            { name: "red baby domer", rarity: "common", price: 10, weight: 30, color: "#c9e6c5", image: "media/red_domer.png"},
+            { name: "yellow baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/yellow_domer.png"},
+            { name: "blue baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/blue_domer.png"},
+            { name: "red baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/red_domer.png"},
 
             //uncommon
-            { name: "bart", rarity: "uncommon", price: 20, weight: 12, color: "#f5dda2", image: "media/bart.png"},
-            { name: "blart", rarity: "common", price: 25, weight: 10, color: "#c9e6c5", image: "media/blart.png"},
-            { name: "bar", rarity: "common", price: 25, weight: 10, color: "#c9e6c5", image: "media/bar.png"},
+            { name: "bart", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/bart.png"},
+            { name: "blart", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/blart.png"},
+            { name: "bar", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/bar.png"},
+            { name: "cromer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/cromer.png"},
+            { name: "dooker", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/dooker.png"},
+            { name: "adolmer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/adolmer.png"},
+            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/sidedome_bob.png"},
+            { name: "homer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/homer.png"},
+
 
             //rare
-            { name: "remod", rarity: "rare", price: 70, weight: 3, color: "#b9d7ef", image: "media/remod.png"},
-            { name: "boner", rarity: "rare", price: 80, weight: 2, color: "#b9d7ef", image: "media/boner.png"},
+            { name: "remod", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/remod.png"},
+            { name: "boner", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/boner.png"},
+            { name: "lingling", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/lingling.png"},
+            { name: "bromer", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/bromer.png"},
+            { name: "astromer", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/astromer.png"},
+            { name: "hoger", rarity: "rare", price: 25, weight: 10, color: "#D93232", image: "media/hoger.png"},
+
+
+            //epic
+            { name: "glorbo", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/glorbo.png"},
+            { name: "chiller", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/legendary_domer.png"},
+            { name: "zzomer", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/zzomer.png"},
+            { name: "3domer", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/3domer.png"},
 
             //legendary
-            { name: "legendary domer", rarity: "legendary", price: 1000, weight: 0.1, color: "#e3b7e8", image: "media/legendary_domer.png"}
+            { name: "claymer", rarity: "legendary", price: 250, weight: 1, color: "#c1b33e", image: "media/claymer.png"}
+            
 
         ];
 
+        applySavedCosmetics();
+        updateShopButtons();
         loadInventory();
+        saveGame();
     </script>
 
+    <footer>made by 95% ai lol</footer>
 </body>
 </html>
