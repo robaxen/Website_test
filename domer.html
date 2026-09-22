@@ -178,30 +178,6 @@
             text-transform: uppercase;
         }
 
-        body.theme-midnight {
-            color: #e8f1ff;
-            background: linear-gradient(135deg, #111b36, #263b62);
-        }
-
-        body.theme-midnight .main {
-            background: #172542;
-            border-color: #4c6d9d;
-        }
-
-        body.theme-midnight h1,
-        body.theme-midnight h2,
-        body.theme-midnight .shopItem h3,
-        body.theme-midnight #healthBar {
-            color: #c8e5ff;
-        }
-
-        body.theme-midnight .shopItem,
-        body.theme-midnight #inventory,
-        body.theme-midnight .lootStat {
-            background: #22365a;
-            border-color: #4c6d9d;
-        }
-
         body.theme-sunset {
             background: linear-gradient(135deg, #f6c58d, #d87873 48%, #553b68);
         }
@@ -446,7 +422,7 @@
 <body>
     <header>
         <h1>Domer</h1>
-        <h2>KILL DOBBER test</h2>
+        <h2>KILL DOBBER</h2>
         <div id="playerGold">Coins: <span id="goldAmount">0</span></div>
         <button id="statsButton" type="button">View stats</button>
     </header>
@@ -493,21 +469,6 @@
                     <h3>Lucky Strike</h3>
                     <p>Increase your chance to deal double damage.</p>
                     <button class="shopButton" data-shop-item="critChance" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Coin Press</h3>
-                    <p>Earn more coins whenever you sell an item.</p>
-                    <button class="shopButton" data-shop-item="coinMultiplier" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Collector's Lens</h3>
-                    <p>Improve the odds of finding uncommon or better items.</p>
-                    <button class="shopButton" data-shop-item="luck" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Midnight Mode</h3>
-                    <p>Equip a deep blue night theme for the whole page.</p>
-                    <button class="shopButton" data-shop-item="midnight" type="button"></button>
                 </article>
                 <article class="shopItem">
                     <h3>Sunset Mode</h3>
@@ -606,8 +567,6 @@
             tapPower: 0,
             autoTap: false,
             critChance: 0,
-            coinMultiplier: 0,
-            luck: 0,
             cosmetics: [],
             theme: "default",
             frame: "default"
@@ -629,6 +588,12 @@
             ...defaultShopState,
             ...(savedGame ? savedGame.shop : legacyShopState || {})
         };
+        shopState.theme = shopState.theme === "sunset" ? "sunset" : "default";
+        shopState.cosmetics = Array.isArray(shopState.cosmetics)
+            ? shopState.cosmetics.filter((cosmetic) => ["sunset", "neon", "gold"].includes(cosmetic))
+            : [];
+        delete shopState.coinMultiplier;
+        delete shopState.luck;
         var progressState = {
             ...defaultProgressState,
             totalMined: Number(savedProgress.totalMined) || 0,
@@ -787,17 +752,6 @@
                 buy: () => shopState.critChance < 5 ? (shopState.critChance += 1, true) : false,
                 label: () => shopState.critChance >= 5 ? "Max level" : `Buy for ${80 + shopState.critChance * 60} coins`
             },
-            coinMultiplier: {
-                getCost: () => 100 + shopState.coinMultiplier * 75,
-                buy: () => shopState.coinMultiplier < 5 ? (shopState.coinMultiplier += 1, true) : false,
-                label: () => shopState.coinMultiplier >= 5 ? "Max level" : `Buy for ${100 + shopState.coinMultiplier * 75} coins`
-            },
-            luck: {
-                getCost: () => 150 + shopState.luck * 100,
-                buy: () => shopState.luck < 5 ? (shopState.luck += 1, true) : false,
-                label: () => shopState.luck >= 5 ? "Max level" : `Buy for ${150 + shopState.luck * 100} coins`
-            },
-            midnight: { cost: 120, cosmetic: "midnight", type: "theme", label: () => "Buy for 120 coins" },
             sunset: { cost: 160, cosmetic: "sunset", type: "theme", label: () => "Buy for 160 coins" },
             neonFrame: { cost: 220, cosmetic: "neon", type: "frame", label: () => "Buy for 220 coins" },
             goldFrame: { cost: 180, cosmetic: "gold", type: "frame", label: () => "Buy for 180 coins" }
@@ -851,7 +805,7 @@
         function equipCosmetic(item){
             if (item.type === "theme"){
                 shopState.theme = item.cosmetic;
-                document.body.classList.remove("theme-midnight", "theme-sunset");
+                document.body.classList.remove("theme-sunset");
                 document.body.classList.add(`theme-${item.cosmetic}`);
             } else {
                 shopState.frame = item.cosmetic;
@@ -890,9 +844,7 @@
         function itemIdIsMaxed(item){
             return item === shopItems.tapPower && shopState.tapPower >= 10 ||
                 item === shopItems.autoTap && shopState.autoTap ||
-                item === shopItems.critChance && shopState.critChance >= 5 ||
-                item === shopItems.coinMultiplier && shopState.coinMultiplier >= 5 ||
-                item === shopItems.luck && shopState.luck >= 5;
+                item === shopItems.critChance && shopState.critChance >= 5;
         }
 
         setInterval(() => {
@@ -902,17 +854,13 @@
         }, 1000);
 
         function pickRandomLoot(){
-            const weightedLootTable = lootTable.map((item) => ({
-                ...item,
-                weight: item.weight * (shopState.luck > 0 && item.rarity !== "common" ? 1 + shopState.luck * 0.15 : 1)
-            }));
-            const totalWeight = weightedLootTable.reduce((sum, item) => sum + item.weight, 0);
+            const totalWeight = lootTable.reduce((sum, item) => sum + item.weight, 0);
             let random = Math.random() * totalWeight;
 
-            for (const item of weightedLootTable){
+            for (const item of lootTable){
                 random -= item.weight;
                 if (random <= 0){
-                    return lootTable.find((lootItem) => lootItem.name === item.name);
+                    return item;
                 }
             }
 
@@ -1153,7 +1101,7 @@
         }
 
         function getSellValue(item){
-            return Math.round(item.price * (1 + shopState.coinMultiplier * 0.2));
+            return item.price;
         }
 
         //adding loot 
