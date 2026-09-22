@@ -397,7 +397,7 @@
             font-size: 2rem;
             font-weight: bold;
             letter-spacing: 0.08em;
-            text-shadow: 0px 0px 5px white;
+            text-shadow: 0 0 10px #fdf900, 0 0 10px #ff7300;
         }
 
         .lootStats {
@@ -568,7 +568,7 @@
     <dialog id="lootModal">
         <div class="lootModalContent">
             <img id="lootImage" alt="">
-            <div id="lootNew" hidden>NEW</div>
+            <div id="lootNew" hidden>NEW!</div>
             <h2 id="lootName"></h2>
             <div class="lootStats">
                 <div class="lootStat">
@@ -784,9 +784,6 @@
             addToInventory(item);
             showLootModal(item, false, isNew);
             progressState.totalMined += 1;
-            if (isNew){
-                progressState.uniqueItems.push(item.name);
-            }
             progressState.dailyMined += 1;
             renderDailyMission();
             saveGame();
