@@ -80,6 +80,13 @@
             box-shadow: 0 12px 30px rgb(46 79 75 / 15%);
         }
 
+        body.admin-mode .main {
+            width: min(100%, 1080px);
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 24px;
+        }
+
         .gameLayout {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -151,6 +158,34 @@
             margin-top: 24px;
             padding-top: 20px;
             border-top: 1px solid #d8e3df;
+        }
+
+        body.admin-mode #adminTools {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            margin-top: 0;
+            padding: 0 20px 0 0;
+            border-top: 0;
+            border-right: 1px solid #d8e3df;
+        }
+
+        body.admin-mode .gameLayout,
+        body.admin-mode .shop {
+            grid-column: 2;
+        }
+
+        body.admin-mode .gameLayout {
+            grid-row: 1;
+        }
+
+        body.admin-mode .shop {
+            grid-row: 2;
+            margin-top: 0;
+        }
+
+        body.admin-mode #adminTools button {
+            width: 100%;
+            margin: 4px 0;
         }
 
         #adminTools h2 {
@@ -356,6 +391,15 @@
             color: #1f4d4a;
         }
 
+        #lootNew {
+            margin: 0 0 4px;
+            color: #b36b42;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 0.08em;
+            text-shadow: 0px 0px 5px white;
+        }
+
         .lootStats {
             display: grid;
             gap: 8px;
@@ -410,6 +454,17 @@
         }
 
         @media (max-width: 640px) {
+            body.admin-mode .main {
+                display: block;
+            }
+
+            body.admin-mode #adminTools {
+                margin-bottom: 24px;
+                padding: 0 0 20px;
+                border-right: 0;
+                border-bottom: 1px solid #d8e3df;
+            }
+
             .gameLayout {
                 grid-template-columns: 1fr;
             }
@@ -497,6 +552,7 @@
             <h2 id="adminToolsTitle">Admin tools</h2>
             <p class="shopIntro">Developer-only controls. Open this page with the #admin URL hash.</p>
             <button id="resetProgress" type="button">Reset all progress</button>
+            <button id="adminGetLoot" type="button">Get item now</button>
             <button id="simulateRarities" type="button">Test rarity odds</button>
             <table>
                 <thead>
@@ -512,6 +568,7 @@
     <dialog id="lootModal">
         <div class="lootModalContent">
             <img id="lootImage" alt="">
+            <div id="lootNew" hidden>NEW</div>
             <h2 id="lootName"></h2>
             <div class="lootStats">
                 <div class="lootStat">
@@ -624,6 +681,7 @@
         };
         const lootModal = document.getElementById("lootModal");
         const lootImage = document.getElementById("lootImage");
+        const lootNew = document.getElementById("lootNew");
         const lootName = document.getElementById("lootName");
         const lootRarity = document.getElementById("lootRarity");
         const lootPrice = document.getElementById("lootPrice");
@@ -643,6 +701,7 @@
         const statsCoins = document.getElementById("statsCoins");
         const adminTools = document.getElementById("adminTools");
         const resetProgress = document.getElementById("resetProgress");
+        const adminGetLoot = document.getElementById("adminGetLoot");
         const simulateRarities = document.getElementById("simulateRarities");
         const adminRarityResults = document.getElementById("adminRarityResults");
         var selectedItem = null;
@@ -657,6 +716,7 @@
 
         if (window.location.hash.toLowerCase() === "#admin"){
             adminTools.hidden = false;
+            document.body.classList.add("admin-mode");
         }
 
         goldAmount.textContent = playerGold;
@@ -672,6 +732,7 @@
         statsButton.addEventListener("click", showPlayerStats);
         closeStatsModal.addEventListener("click", () => statsModal.close());
         resetProgress.addEventListener("click", resetAllProgress);
+        adminGetLoot.addEventListener("click", () => getRandomLoot(true));
         simulateRarities.addEventListener("click", runRaritySimulation);
         claimDailyMission.addEventListener("click", claimDailyReward);
         lootModal.addEventListener("click", (event) => {
@@ -713,16 +774,17 @@
             }
         }
 
-        function getRandomLoot(){
-            if (health !== 0){
+        function getRandomLoot(force = false){
+            if (!force && health !== 0){
                 return;
             }
 
             const item = pickRandomLoot();
+            const isNew = !progressState.uniqueItems.includes(item.name);
             addToInventory(item);
-            showLootModal(item);
+            showLootModal(item, false, isNew);
             progressState.totalMined += 1;
-            if (!progressState.uniqueItems.includes(item.name)){
+            if (isNew){
                 progressState.uniqueItems.push(item.name);
             }
             progressState.dailyMined += 1;
@@ -857,17 +919,18 @@
         }, 1000);
 
         function pickRandomLoot(){
-            const totalWeight = lootTable.reduce((sum, item) => sum + item.weight, 0);
+            const weightedItems = lootTable.filter((item) => Number.isFinite(Number(item.weight)) && Number(item.weight) > 0);
+            const totalWeight = weightedItems.reduce((sum, item) => sum + Number(item.weight), 0);
             let random = Math.random() * totalWeight;
 
-            for (const item of lootTable){
-                random -= item.weight;
+            for (const item of weightedItems){
+                random -= Number(item.weight);
                 if (random <= 0){
                     return item;
                 }
             }
 
-            return lootTable[lootTable.length - 1];
+            return weightedItems[weightedItems.length - 1];
         }
 
         function addToInventory(item, quantity = 1, save = true){
@@ -1042,11 +1105,12 @@
             }
         }
 
-        function showLootModal(item, fromInventory = false){
+        function showLootModal(item, fromInventory = false, isNew = false){
             selectedItem = item;
             lootModal.style.backgroundColor = item.color;
             lootImage.src = item.image;
             lootImage.alt = item.name;
+            lootNew.hidden = !isNew;
             lootName.textContent = item.name;
             lootRarity.textContent = item.rarity;
             lootPrice.textContent = item.price;
@@ -1140,14 +1204,14 @@
 
 
             //epic
-            { name: "glorbo", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/glorbo.png"},
-            { name: "chiller", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/legendary_domer.png"},
-            { name: "zzomer", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/zzomer.png"},
-            { name: "3domer", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/3domer.png"},
-            { name: "domerman", rarity: "epic", price: 100, weight: 5, color: "#ff00ba", image: "media/domerman.png"},
+            { name: "glorbo", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/glorbo.png"},
+            { name: "chiller", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/legendary_domer.png"},
+            { name: "zzomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/zzomer.png"},
+            { name: "3domer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/3domer.png"},
+            { name: "domerman", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/domerman.png"},
 
             //legendary
-            { name: "claymer", rarity: "legendary", price: 250, weight: 1, color: "#c1b33e", image: "media/claymer.png"}
+            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", image: "media/claymer.png"}
             
 
         ];
