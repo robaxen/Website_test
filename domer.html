@@ -263,11 +263,47 @@
         }
 
         body.theme-sunset {
+            --theme-ink: #633b42;
+            --theme-muted: #6e5352;
+            --theme-button: #8c3f4d;
+            --theme-button-hover: #6e2e3d;
             background: linear-gradient(135deg, #f6c58d, #d87873 48%, #553b68);
         }
 
         body.theme-sunset .main {
             border-color: #d58a6d;
+        }
+
+        body.theme-arcade {
+            --theme-ink: #073b4c;
+            --theme-muted: #25616a;
+            --theme-button: #087e8b;
+            --theme-button-hover: #05636d;
+            background: linear-gradient(135deg, #111827, #087e8b 52%, #4ecdc4);
+        }
+
+        body.theme-frost {
+            --theme-ink: #244657;
+            --theme-muted: #496b7d;
+            --theme-button: #376d89;
+            --theme-button-hover: #28536c;
+            background: linear-gradient(135deg, #d8f3f5, #a8dadc 52%, #f1f8ff);
+        }
+
+        body.theme-candy {
+            --theme-ink: #7d294a;
+            --theme-muted: #8e4560;
+            --theme-button: #c63873;
+            --theme-button-hover: #a42c61;
+            background: linear-gradient(135deg, #ff8fab, #ffc2d1 52%, #ffd6a5);
+        }
+
+        body.theme-void {
+            --theme-ink: #38234b;
+            --theme-muted: #67537b;
+            --theme-button: #573b70;
+            --theme-button-hover: #432c59;
+            background: linear-gradient(135deg, #151521, #332447 52%, #0f3d3e);
         }
 
         body.frame-neon .main {
@@ -278,6 +314,22 @@
         body.frame-gold .main {
             border: 6px solid #c7972c;
             box-shadow: 0 0 18px rgb(199 151 44 / 40%), 0 12px 30px rgb(46 79 75 / 15%);
+        }
+
+        body.frame-prism .main {
+            border: 6px solid #53d7d0;
+            box-shadow: 0 0 0 3px #ee79c6, 0 0 22px rgb(83 215 208 / 45%);
+        }
+
+        body.frame-pixel .main {
+            border: 8px solid #263238;
+            border-radius: 2px;
+            box-shadow: inset 0 0 0 3px #f5dda2, 0 0 0 3px #263238;
+        }
+
+        body.frame-thorn .main {
+            border: 6px solid #426f45;
+            box-shadow: inset 0 0 0 2px #9caf62, 0 0 18px rgb(66 111 69 / 40%);
         }
 
         .clickerArea {
@@ -327,15 +379,15 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-
-        #bossLevelLabel {
-            margin: 0 0 4px;
-            color: #607d7b;
-        }
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
             transition: background 150ms ease, transform 150ms ease;
+        }
+
+        #bossLevelLabel {
+            margin: 0 0 4px;
+            color: #607d7b;
         }
 
         button:hover:not(:disabled) {
@@ -551,6 +603,41 @@
             }
         }
 
+        body[class*="theme-"] :is(header h1, .inventoryArea > h2, #totalBossDamage, #healthBar, .shop h2, .shopCategory > h3, .shopItem h3, #adminTools h2) {
+            color: var(--theme-ink);
+        }
+
+        body[class*="theme-"] :is(header h2, #progressionSummary, .clickerArea p, #tapFeedback, #bossLevelLabel, .shopIntro, .shopItem p, .shopItemMeta, .shopItemUnlock, #shopStatus, .dailyMission) {
+            color: var(--theme-muted);
+        }
+
+        body[class*="theme-"] button:not(:disabled) {
+            color: #fffdf9;
+            background: var(--theme-button);
+        }
+
+        body[class*="theme-"] button:hover:not(:disabled) {
+            background: var(--theme-button-hover);
+        }
+
+        body[class*="theme-"] #statsButton {
+            color: #fffdf9;
+            background: var(--theme-button);
+            border-color: var(--theme-button-hover);
+        }
+
+        body[class*="theme-"] #statsButton:hover:not(:disabled),
+        body[class*="theme-"] #sellLoot:hover:not(:disabled),
+        body[class*="theme-"] #sellAllLoot:hover:not(:disabled) {
+            background: var(--theme-button-hover);
+        }
+
+        body[class*="theme-"] #sellLoot,
+        body[class*="theme-"] #sellAllLoot {
+            color: #fffdf9;
+            background: var(--theme-button);
+        }
+
     </style>
 </head>
 <body>
@@ -599,21 +686,56 @@
             <section class="shopCategory" aria-labelledby="cosmeticShopTitle">
                 <h3 id="cosmeticShopTitle">Cosmetics</h3>
                 <div class="shopGrid">
-                <article class="shopItem">
-                    <h3>Sunset Mode</h3>
-                    <p>Equip a warm sunset theme with a bold horizon glow.</p>
-                    <button class="shopButton" data-shop-item="sunset" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Neon Frame</h3>
-                    <p>Equip a bright pink neon border around your game.</p>
-                    <button class="shopButton" data-shop-item="neonFrame" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Golden Frame</h3>
-                    <p>Equip a polished gold border around your game.</p>
-                    <button class="shopButton" data-shop-item="goldFrame" type="button"></button>
-                </article>
+                    <article class="shopItem">
+                        <h3>Sunset Mode</h3>
+                        <p>Equip a warm sunset theme with a bold horizon glow.</p>
+                        <button class="shopButton" data-shop-item="sunset" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Arcade</h3>
+                        <p>Give the game a bright retro arcade atmosphere.</p>
+                        <button class="shopButton" data-shop-item="arcadeTheme" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Frost</h3>
+                        <p>Switch to a crisp, icy color theme.</p>
+                        <button class="shopButton" data-shop-item="frostTheme" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Candy</h3>
+                        <p>Brighten the game with playful candy colors.</p>
+                        <button class="shopButton" data-shop-item="candyTheme" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Void</h3>
+                        <p>Set the game against a deep, strange void.</p>
+                        <button class="shopButton" data-shop-item="voidTheme" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Neon Frame</h3>
+                        <p>Equip a bright pink neon border around your game.</p>
+                        <button class="shopButton" data-shop-item="neonFrame" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Golden Frame</h3>
+                        <p>Equip a polished gold border around your game.</p>
+                        <button class="shopButton" data-shop-item="goldFrame" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Prism Frame</h3>
+                        <p>Outline the game with shifting prism colors.</p>
+                        <button class="shopButton" data-shop-item="prismFrame" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Pixel Frame</h3>
+                        <p>Give the game a chunky retro pixel border.</p>
+                        <button class="shopButton" data-shop-item="pixelFrame" type="button"></button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Thorn Frame</h3>
+                        <p>Wrap the game in a wild green thorn border.</p>
+                        <button class="shopButton" data-shop-item="thornFrame" type="button"></button>
+                    </article>
                 </div>
             </section>
             <p id="shopStatus" role="status"></p>
@@ -623,6 +745,7 @@
         <section id="adminTools" hidden aria-labelledby="adminToolsTitle">
             <h2 id="adminToolsTitle">Admin tools</h2>
             <p class="shopIntro">Developer-only controls. Open this page with the #admin URL hash.</p>
+            <button id="adminAddCoins" type="button">Give 100 coins</button>
             <button id="resetProgress" type="button">Reset all progress</button>
             <button id="adminGetLoot" type="button">Get item now</button>
             <button id="simulateRarities" type="button">Test rarity odds</button>
@@ -709,18 +832,20 @@
         const balanceConfig = {
             baseBossHealth: 100,
             bossHealthScaling: 1.10,
+            bossHealthSoftCapLevel: 50,
+            bossHealthPostCapExponent: 2.2,
             baseBossXp: 75,
             bossXpScaling: 1.12,
             baseXpToNextLevel: 100,
             xpRequirementScaling: 1.14,
             baseItemAttackDamage: 0.6,
             rarityPullWeights: {
-                common: 50,
-                uncommon: 25,
+                common: 71.5,
+                uncommon: 12.1,
                 rare: 6.05,
                 epic: 1.21,
                 legendary: 0.469,
-                mythic: 0.00605
+                mythic: 0.0605
             },
             rarityDamageMultipliers: {
                 common: 1,
@@ -731,9 +856,12 @@
                 mythic: 500
             },
             baseBossBounty: 20,
+            bossBountyLevelScaling: 0.03,
             bountyBonusPerLevel: 0.15,
+            manualTapsPerCoin: 10,
+            tapDamageScaling: 1.08,
             itemDamageBonusPerLevel: 0.06,
-            luckWeightStep: 1.1,
+            luckWeightStep: 1.08,
             rarityLuckIndex: {
                 common: 0,
                 uncommon: 1,
@@ -746,12 +874,12 @@
             maxScaledValue: 1e12
         };
         const shopUpgradeConfig = {
-            tapPower: { category: "Tapping", stateKey: "tapPower", name: "Tap Power", description: "Tapping does more damage.", maxLevel: 10, unlockLevel: 1, baseCost: 40, costGrowth: 1.35 },
+            tapPower: { category: "Tapping", stateKey: "tapPower", name: "Tap Power", description: "Tapping does more damage.", maxLevel: 10, unlockLevel: 1, baseCost: 40, costGrowth: 1.45 },
             autoTap: { category: "Tapping", stateKey: "autoTap", name: "Pocket Drill", description: "Drill that deals passive damage.", maxLevel: 1, unlockLevel: 1, baseCost: 250, costGrowth: 1 },
             critChance: { category: "Tapping", stateKey: "critChance", name: "Critical Training", description: "Increase crit-chance.", maxLevel: 5, unlockLevel: 1, baseCost: 80, costGrowth: 1.55 },
             bossBounty: { category: "Economy", stateKey: "bossBountyLevel", name: "Boss Bounty", description: "More boss reward money.", maxLevel: 5, unlockLevel: 5, baseCost: 100, costGrowth: 1.8 },
             itemSynergy: { category: "Combat", stateKey: "itemDamageLevel", name: "Item Synergy", description: "Make your domers stronger.", maxLevel: 5, unlockLevel: 15, baseCost: 180, costGrowth: 1.55 },
-            lootLuck: { category: "Items & Loot", stateKey: "lootLuckLevel", name: "Loot Luck", description: "Improve your chances of finding rarer domers.", maxLevel: 4, unlockLevels: [10, 20, 35, 50], baseCost: 100, costGrowth: 2 }
+            lootLuck: { category: "Items & Loot", stateKey: "lootLuckLevel", name: "Loot Luck", description: "Improve your chances of finding rarer domers.", maxLevel: 5, unlockLevels: [10, 20, 30, 40, 50], baseCost: 100, costGrowth: 2.2 }
         };
         var health = 0;
         var currentBossLevel = 1;
@@ -760,6 +888,8 @@
         const goldStorageKey = "domerGold";
         const shopStorageKey = "domerShop";
         const saveStorageKey = "domerSave";
+        const themeCosmetics = ["sunset", "arcade", "frost", "candy", "void"];
+        const frameCosmetics = ["neon", "gold", "prism", "pixel", "thorn"];
         const defaultShopState = {
             tapPower: 0,
             autoTap: false,
@@ -774,6 +904,7 @@
         const defaultProgressState = {
             totalMined: 0,
             totalTaps: 0,
+            tapCoinRemainder: 0,
             criticalHits: 0,
             uniqueItems: [],
             dailyDate: "",
@@ -790,7 +921,7 @@
             ...defaultShopState,
             ...(savedGame ? savedGame.shop : legacyShopState || {})
         };
-        shopState.theme = shopState.theme === "sunset" ? "sunset" : "default";
+        shopState.theme = themeCosmetics.includes(shopState.theme) ? shopState.theme : "default";
             shopState.tapPower = normalizeUpgradeLevel(shopState.tapPower, shopUpgradeConfig.tapPower.maxLevel);
             shopState.critChance = normalizeUpgradeLevel(shopState.critChance, shopUpgradeConfig.critChance.maxLevel);
             shopState.autoTap = shopState.autoTap === true;
@@ -798,7 +929,7 @@
             shopState.itemDamageLevel = normalizeUpgradeLevel(shopState.itemDamageLevel, shopUpgradeConfig.itemSynergy.maxLevel);
             shopState.lootLuckLevel = normalizeUpgradeLevel(shopState.lootLuckLevel, shopUpgradeConfig.lootLuck.maxLevel);
         shopState.cosmetics = Array.isArray(shopState.cosmetics)
-            ? shopState.cosmetics.filter((cosmetic) => ["sunset", "neon", "gold"].includes(cosmetic))
+            ? shopState.cosmetics.filter((cosmetic) => [...themeCosmetics, ...frameCosmetics].includes(cosmetic))
             : [];
         delete shopState.coinMultiplier;
         delete shopState.luck;
@@ -806,6 +937,9 @@
             ...defaultProgressState,
             totalMined: Number(savedProgress.totalMined) || 0,
             totalTaps: Number(savedProgress.totalTaps) || 0,
+            tapCoinRemainder: Number.isFinite(Number(savedProgress.tapCoinRemainder))
+                ? Math.max(0, Math.floor(Number(savedProgress.tapCoinRemainder))) % balanceConfig.manualTapsPerCoin
+                : 0,
             criticalHits: Number(savedProgress.criticalHits) || 0,
             uniqueItems: Array.isArray(savedProgress.uniqueItems) ? savedProgress.uniqueItems : [],
             dailyDate: typeof savedProgress.dailyDate === "string" ? savedProgress.dailyDate : "",
@@ -863,6 +997,7 @@
             const statsPlayerXp = document.getElementById("statsPlayerXp");
             const statsBossDamage = document.getElementById("statsBossDamage");
         const adminTools = document.getElementById("adminTools");
+        const adminAddCoins = document.getElementById("adminAddCoins");
         const resetProgress = document.getElementById("resetProgress");
         const adminGetLoot = document.getElementById("adminGetLoot");
         const simulateRarities = document.getElementById("simulateRarities");
@@ -897,7 +1032,13 @@
         }
 
         function getBossMaxHealth(level){
-            return calculateScaledValue(balanceConfig.baseBossHealth, balanceConfig.bossHealthScaling, level);
+            const bossLevel = normalizePlayerLevel(level);
+            const softCapLevel = balanceConfig.bossHealthSoftCapLevel;
+            const healthAtSoftCap = calculateScaledValue(balanceConfig.baseBossHealth, balanceConfig.bossHealthScaling, softCapLevel);
+            const health = bossLevel <= softCapLevel
+                ? calculateScaledValue(balanceConfig.baseBossHealth, balanceConfig.bossHealthScaling, bossLevel)
+                : healthAtSoftCap * Math.pow(bossLevel / softCapLevel, balanceConfig.bossHealthPostCapExponent);
+            return Math.min(balanceConfig.maxScaledValue, health);
         }
 
         function getXpRequired(level){
@@ -935,7 +1076,8 @@
         }
 
         function getTapDamage(){
-            return 1 + shopState.tapPower;
+            const tapLevel = normalizeUpgradeLevel(shopState.tapPower, shopUpgradeConfig.tapPower.maxLevel);
+            return Math.round((1 + tapLevel) * Math.pow(balanceConfig.tapDamageScaling, tapLevel));
         }
 
         function getAutoTapDamagePerSecond(){
@@ -946,8 +1088,10 @@
             return 1 + shopState.itemDamageLevel * balanceConfig.itemDamageBonusPerLevel;
         }
 
-        function getBossBountyReward(){
-            return Math.floor(balanceConfig.baseBossBounty * (1 + shopState.bossBountyLevel * balanceConfig.bountyBonusPerLevel));
+        function getBossBountyReward(bossLevel = currentBossLevel){
+            const levelReward = 1 + (normalizePlayerLevel(bossLevel) - 1) * balanceConfig.bossBountyLevelScaling;
+            const upgradeReward = 1 + shopState.bossBountyLevel * balanceConfig.bountyBonusPerLevel;
+            return Math.floor(balanceConfig.baseBossBounty * levelReward * upgradeReward);
         }
 
         function getLuckAdjustedWeight(item, luckLevel = shopState.lootLuckLevel){
@@ -1026,7 +1170,7 @@
                 balanceConfig.bossXpScaling,
                 defeatedLevel
             )));
-            const bounty = getBossBountyReward();
+            const bounty = getBossBountyReward(defeatedLevel);
             progressState.xp += reward;
             playerGold += bounty;
             let levelsGained = 0;
@@ -1076,6 +1220,10 @@
         statsButton.addEventListener("click", showPlayerStats);
         closeStatsModal.addEventListener("click", () => statsModal.close());
         resetProgress.addEventListener("click", resetAllProgress);
+        adminAddCoins.addEventListener("click", () => {
+            playerGold += 100;
+            saveGold();
+        });
         adminGetLoot.addEventListener("click", () => getRandomLoot(true));
         simulateRarities.addEventListener("click", runRaritySimulation);
         claimDailyMission.addEventListener("click", claimDailyReward);
@@ -1094,11 +1242,19 @@
             progressState.totalTaps += 1;
             const isCritical = Math.random() < shopState.critChance * 0.05;
             const damage = getTapDamage() * (isCritical ? 2 : 1);
+            progressState.tapCoinRemainder += 1;
+            const tapCoinsEarned = Math.floor(progressState.tapCoinRemainder / balanceConfig.manualTapsPerCoin);
+            progressState.tapCoinRemainder %= balanceConfig.manualTapsPerCoin;
+            if (tapCoinsEarned > 0){
+                playerGold += tapCoinsEarned;
+                saveGold();
+            }
+            const coinFeedback = tapCoinsEarned > 0 ? `, +${tapCoinsEarned} coin` : "";
             if (isCritical){
                 progressState.criticalHits += 1;
-                tapFeedback.textContent = `Critical hit! ${damage} damage`;
+                tapFeedback.textContent = `Critical hit! ${damage} damage${coinFeedback}`;
             } else {
-                tapFeedback.textContent = `${damage} damage`;
+                tapFeedback.textContent = `${damage} damage${coinFeedback}`;
             }
             damageDomer(damage);
             saveGame();
@@ -1141,8 +1297,15 @@
 
         const shopItems = {
             sunset: { cost: 160, cosmetic: "sunset", type: "theme", label: () => "Buy for 160 coins" },
+            arcadeTheme: { cost: 240, cosmetic: "arcade", type: "theme", label: () => "Buy for 240 coins" },
+            frostTheme: { cost: 220, cosmetic: "frost", type: "theme", label: () => "Buy for 220 coins" },
+            candyTheme: { cost: 220, cosmetic: "candy", type: "theme", label: () => "Buy for 220 coins" },
+            voidTheme: { cost: 400, cosmetic: "void", type: "theme", label: () => "Buy for 400 coins" },
             neonFrame: { cost: 220, cosmetic: "neon", type: "frame", label: () => "Buy for 220 coins" },
-            goldFrame: { cost: 180, cosmetic: "gold", type: "frame", label: () => "Buy for 180 coins" }
+            goldFrame: { cost: 180, cosmetic: "gold", type: "frame", label: () => "Buy for 180 coins" },
+            prismFrame: { cost: 300, cosmetic: "prism", type: "frame", label: () => "Buy for 300 coins" },
+            pixelFrame: { cost: 220, cosmetic: "pixel", type: "frame", label: () => "Buy for 220 coins" },
+            thornFrame: { cost: 260, cosmetic: "thorn", type: "frame", label: () => "Buy for 260 coins" }
         };
 
         function renderUpgradeShop(){
@@ -1184,7 +1347,7 @@
                     lockLabel.className = "shopItemUnlock";
                     lockLabel.textContent = locked
                         ? `Unlocks at Player Level ${requiredLevel}.`
-                        : upgrade.unlockLevels && !maxed
+                        : upgrade.unlockLevels && level < upgrade.maxLevel - 1
                             ? `Next rank unlocks at Player Level ${getShopUpgradeUnlockLevel(upgrade, nextLevel)}.`
                             : "";
                     button.type = "button";
@@ -1279,11 +1442,11 @@
         function equipCosmetic(item){
             if (item.type === "theme"){
                 shopState.theme = item.cosmetic;
-                document.body.classList.remove("theme-sunset");
+                themeCosmetics.forEach((theme) => document.body.classList.remove(`theme-${theme}`));
                 document.body.classList.add(`theme-${item.cosmetic}`);
             } else {
                 shopState.frame = item.cosmetic;
-                document.body.classList.remove("frame-neon", "frame-gold");
+                frameCosmetics.forEach((frame) => document.body.classList.remove(`frame-${frame}`));
                 document.body.classList.add(`frame-${item.cosmetic}`);
             }
             saveShop();
@@ -1292,10 +1455,10 @@
         }
 
         function applySavedCosmetics(){
-            if (shopState.theme !== "default"){
+            if (themeCosmetics.includes(shopState.theme)){
                 document.body.classList.add(`theme-${shopState.theme}`);
             }
-            if (shopState.frame !== "default"){
+            if (frameCosmetics.includes(shopState.frame)){
                 document.body.classList.add(`frame-${shopState.frame}`);
             }
         }
@@ -1428,7 +1591,7 @@
 
         function saveGame(){
             localStorage.setItem(saveStorageKey, JSON.stringify({
-                version: 3,
+                version: 4,
                 coins: playerGold,
                 shop: shopState,
                 progress: progressState,
@@ -1660,6 +1823,6 @@
         saveGame();
     </script>
 
-    <footer>made by 95% ai lol</footer>
+    <footer>made by 99% ai lol</footer>
 </body>
 </html>
