@@ -66,6 +66,26 @@
             font-size: 0.9rem;
         }
 
+        #progressionSummary {
+            width: min(100%, 280px);
+            margin: 12px auto 0;
+            color: #1f4d4a;
+            text-align: left;
+        }
+
+        #progressionSummary p {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 0 6px;
+        }
+
+        #xpProgress {
+            display: block;
+            width: 100%;
+            height: 12px;
+            accent-color: #397c76;
+        }
+
         #statsButton:hover:not(:disabled) {
             background: #a9d7cc;
         }
@@ -117,6 +137,16 @@
             gap: 12px;
         }
 
+        .shopCategory {
+            margin-top: 20px;
+        }
+
+        .shopCategory h3 {
+            margin: 0 0 10px;
+            color: #1f4d4a;
+            font-size: 1rem;
+        }
+
         .shopItem {
             display: flex;
             min-height: 154px;
@@ -138,6 +168,25 @@
             margin: 0 0 12px;
             color: #607d7b;
             font-size: 0.9rem;
+        }
+
+        .shopItemMeta,
+        .shopItem .shopItemMeta,
+        .shopItem .shopItemEffect,
+        .shopItem .shopItemUnlock {
+            flex: 0 0 auto;
+            margin: 0 0 7px;
+            color: #526a66;
+            font-size: 0.84rem;
+        }
+
+        .shopItemEffect {
+            line-height: 1.45;
+        }
+
+        .shopItemUnlock {
+            color: #9a5634;
+            font-weight: bold;
         }
 
         .shopItem button {
@@ -278,6 +327,11 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+
+        #bossLevelLabel {
+            margin: 0 0 4px;
+            color: #607d7b;
+        }
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
@@ -310,6 +364,12 @@
             border-radius: 8px;
         }
 
+        #totalBossDamage {
+            margin: 0 0 10px;
+            color: #1f4d4a;
+            font-weight: bold;
+        }
+
         .dailyMission {
             margin-top: 14px;
             padding: 10px;
@@ -338,6 +398,22 @@
             font-weight: bold;
             cursor: pointer;
             transition: filter 150ms ease, transform 150ms ease;
+        }
+
+        .inventoryItemInfo {
+            min-width: 0;
+        }
+
+        .inventoryItemName,
+        .inventoryItemDamage {
+            display: block;
+        }
+
+        .inventoryItemDamage {
+            margin-top: 3px;
+            color: #607d7b;
+            font-size: 0.82rem;
+            font-weight: normal;
         }
 
         .inventoryItem:hover {
@@ -482,6 +558,11 @@
         <h1>Domer</h1>
         <h2>KILL DOBBER</h2>
         <div id="playerGold">Coins: <span id="goldAmount">0</span></div>
+        <div id="progressionSummary" aria-live="polite">
+            <p><span>Player level</span><strong id="playerLevel">1</strong></p>
+            <p><span>XP</span><strong id="xpText">0 / 100</strong></p>
+            <progress id="xpProgress" max="100" value="0" aria-label="Experience toward next level"></progress>
+        </div>
         <button id="statsButton" type="button">View stats</button>
     </header>
 
@@ -489,6 +570,7 @@
         <div class="gameLayout">
             <div class="clickerArea">
                 <img src="media/domer.jpg" alt="Domer">
+                <p id="bossLevelLabel">Boss level 1</p>
                 <p>Dobber health</p>
                 <div id="healthBar">100</div>
                 <span id="tapFeedback" role="status"></span>
@@ -498,6 +580,7 @@
 
             <div class="inventoryArea">
                 <h2>Domber inventory</h2>
+                <p id="totalBossDamage">Total Boss Damage: 0/s</p>
                 <div id="inventory">
                     
                 </div>
@@ -511,23 +594,11 @@
 
         <section class="shop" aria-labelledby="shopTitle">
             <h2 id="shopTitle">Domer shop</h2>
-            <p class="shopIntro">Spend coins on stronger taps and style upgrades. Your purchases persist between visits.</p>
-            <div class="shopGrid">
-                <article class="shopItem">
-                    <h3>Heavy Swing</h3>
-                    <p>Deal 1 extra damage per tap. Buy it repeatedly.</p>
-                    <button class="shopButton" data-shop-item="tapPower" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Pocket Drill</h3>
-                    <p>Automatically deals 1 damage every second while mining.</p>
-                    <button class="shopButton" data-shop-item="autoTap" type="button"></button>
-                </article>
-                <article class="shopItem">
-                    <h3>Lucky Strike</h3>
-                    <p>Increase your chance to deal double damage.</p>
-                    <button class="shopButton" data-shop-item="critChance" type="button"></button>
-                </article>
+            <p class="shopIntro">Choose permanent upgrades for tapping, income, item damage, and loot odds.</p>
+            <div id="shopUpgradeCategories"></div>
+            <section class="shopCategory" aria-labelledby="cosmeticShopTitle">
+                <h3 id="cosmeticShopTitle">Cosmetics</h3>
+                <div class="shopGrid">
                 <article class="shopItem">
                     <h3>Sunset Mode</h3>
                     <p>Equip a warm sunset theme with a bold horizon glow.</p>
@@ -543,7 +614,8 @@
                     <p>Equip a polished gold border around your game.</p>
                     <button class="shopButton" data-shop-item="goldFrame" type="button"></button>
                 </article>
-            </div>
+                </div>
+            </section>
             <p id="shopStatus" role="status"></p>
         </section>
 
@@ -579,6 +651,10 @@
                     <span>Price</span>
                     <strong><span id="lootPrice"></span> gold</strong>
                 </div>
+                <div class="lootStat">
+                    <span>Boss damage</span>
+                    <strong id="lootBossDamage"></strong>
+                </div>
             </div>
             <button id="sellLoot">Sell for gold</button>
             <button id="sellAllLoot">Sell all</button>
@@ -590,6 +666,18 @@
         <div class="lootModalContent">
             <h2>Player stats</h2>
             <div class="playerStats">
+                <div class="playerStat">
+                    <span>Level</span>
+                    <strong id="statsPlayerLevel">1</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Experience</span>
+                    <strong id="statsPlayerXp">0</strong>
+                </div>
+                <div class="playerStat">
+                    <span>Boss damage</span>
+                    <strong id="statsBossDamage">0/s</strong>
+                </div>
                 <div class="playerStat">
                     <span>Domers killed</span>
                     <strong id="statsDomersKilled">0</strong>
@@ -618,7 +706,56 @@
     
     <script>
         const maxHealth = 100;
-        var health = maxHealth;
+        const balanceConfig = {
+            baseBossHealth: 100,
+            bossHealthScaling: 1.10,
+            baseBossXp: 75,
+            bossXpScaling: 1.12,
+            baseXpToNextLevel: 100,
+            xpRequirementScaling: 1.14,
+            baseItemAttackDamage: 0.6,
+            rarityPullWeights: {
+                common: 50,
+                uncommon: 25,
+                rare: 6.05,
+                epic: 1.21,
+                legendary: 0.469,
+                mythic: 0.00605
+            },
+            rarityDamageMultipliers: {
+                common: 1,
+                uncommon: 2.5,
+                rare: 8,
+                epic: 30,
+                legendary: 150,
+                mythic: 500
+            },
+            baseBossBounty: 20,
+            bountyBonusPerLevel: 0.15,
+            itemDamageBonusPerLevel: 0.06,
+            luckWeightStep: 1.1,
+            rarityLuckIndex: {
+                common: 0,
+                uncommon: 1,
+                rare: 2,
+                epic: 3,
+                legendary: 4,
+                mythic: 5
+            },
+            itemUpgradeScaling: 1.2,
+            maxScaledValue: 1e12
+        };
+        const shopUpgradeConfig = {
+            tapPower: { category: "Tapping", stateKey: "tapPower", name: "Tap Power", description: "Tapping does more damage.", maxLevel: 10, unlockLevel: 1, baseCost: 40, costGrowth: 1.35 },
+            autoTap: { category: "Tapping", stateKey: "autoTap", name: "Pocket Drill", description: "Drill that deals passive damage.", maxLevel: 1, unlockLevel: 1, baseCost: 250, costGrowth: 1 },
+            critChance: { category: "Tapping", stateKey: "critChance", name: "Critical Training", description: "Increase crit-chance.", maxLevel: 5, unlockLevel: 1, baseCost: 80, costGrowth: 1.55 },
+            bossBounty: { category: "Economy", stateKey: "bossBountyLevel", name: "Boss Bounty", description: "More boss reward money.", maxLevel: 5, unlockLevel: 5, baseCost: 100, costGrowth: 1.8 },
+            itemSynergy: { category: "Combat", stateKey: "itemDamageLevel", name: "Item Synergy", description: "Make your domers stronger.", maxLevel: 5, unlockLevel: 15, baseCost: 180, costGrowth: 1.55 },
+            lootLuck: { category: "Items & Loot", stateKey: "lootLuckLevel", name: "Loot Luck", description: "Improve your chances of finding rarer domers.", maxLevel: 4, unlockLevels: [10, 20, 35, 50], baseCost: 100, costGrowth: 2 }
+        };
+        var health = 0;
+        var currentBossLevel = 1;
+        var bossRewarded = false;
         const inventoryStorageKey = "domerInventory";
         const goldStorageKey = "domerGold";
         const shopStorageKey = "domerShop";
@@ -627,6 +764,9 @@
             tapPower: 0,
             autoTap: false,
             critChance: 0,
+            bossBountyLevel: 0,
+            itemDamageLevel: 0,
+            lootLuckLevel: 0,
             cosmetics: [],
             theme: "default",
             frame: "default"
@@ -638,7 +778,9 @@
             uniqueItems: [],
             dailyDate: "",
             dailyMined: 0,
-            dailyClaimed: false
+            dailyClaimed: false,
+            level: 1,
+            xp: 0
         };
         const legacyShopState = parseSave(localStorage.getItem(shopStorageKey));
         const savedGame = parseSave(localStorage.getItem(saveStorageKey));
@@ -649,6 +791,12 @@
             ...(savedGame ? savedGame.shop : legacyShopState || {})
         };
         shopState.theme = shopState.theme === "sunset" ? "sunset" : "default";
+            shopState.tapPower = normalizeUpgradeLevel(shopState.tapPower, shopUpgradeConfig.tapPower.maxLevel);
+            shopState.critChance = normalizeUpgradeLevel(shopState.critChance, shopUpgradeConfig.critChance.maxLevel);
+            shopState.autoTap = shopState.autoTap === true;
+            shopState.bossBountyLevel = normalizeUpgradeLevel(shopState.bossBountyLevel, shopUpgradeConfig.bossBounty.maxLevel);
+            shopState.itemDamageLevel = normalizeUpgradeLevel(shopState.itemDamageLevel, shopUpgradeConfig.itemSynergy.maxLevel);
+            shopState.lootLuckLevel = normalizeUpgradeLevel(shopState.lootLuckLevel, shopUpgradeConfig.lootLuck.maxLevel);
         shopState.cosmetics = Array.isArray(shopState.cosmetics)
             ? shopState.cosmetics.filter((cosmetic) => ["sunset", "neon", "gold"].includes(cosmetic))
             : [];
@@ -662,22 +810,33 @@
             uniqueItems: Array.isArray(savedProgress.uniqueItems) ? savedProgress.uniqueItems : [],
             dailyDate: typeof savedProgress.dailyDate === "string" ? savedProgress.dailyDate : "",
             dailyMined: Number(savedProgress.dailyMined) || 0,
-            dailyClaimed: savedProgress.dailyClaimed === true
+            dailyClaimed: savedProgress.dailyClaimed === true,
+            level: normalizePlayerLevel(savedProgress.level),
+            xp: Number.isFinite(Number(savedProgress.xp)) ? Math.max(0, Number(savedProgress.xp)) : 0
         };
+        currentBossLevel = progressState.level;
+        health = getBossMaxHealth(currentBossLevel);
         const healthBar = document.getElementById("healthBar");
+        const bossLevelLabel = document.getElementById("bossLevelLabel");
+        const playerLevel = document.getElementById("playerLevel");
+        const xpText = document.getElementById("xpText");
+        const xpProgress = document.getElementById("xpProgress");
+        const totalBossDamage = document.getElementById("totalBossDamage");
         const buttonGober = document.getElementById("buttonGober");
         const buttonGetLoot = document.getElementById("buttonGetLoot");
         const inventory = document.getElementById("inventory");
+            const shopUpgradeCategories = document.getElementById("shopUpgradeCategories");
         const tapFeedback = document.getElementById("tapFeedback");
         const dailyMissionText = document.getElementById("dailyMissionText");
         const claimDailyMission = document.getElementById("claimDailyMission");
         const inventoryItems = new Map();
         const rarityOrder = {
-            legendary: 0,
-            epic: 1,
-            rare: 2,
-            uncommon: 3,
-            common: 4
+            mythic: 0,
+            legendary: 1,
+            epic: 2,
+            rare: 3,
+            uncommon: 4,
+            common: 5
         };
         const lootModal = document.getElementById("lootModal");
         const lootImage = document.getElementById("lootImage");
@@ -685,6 +844,7 @@
         const lootName = document.getElementById("lootName");
         const lootRarity = document.getElementById("lootRarity");
         const lootPrice = document.getElementById("lootPrice");
+            const lootBossDamage = document.getElementById("lootBossDamage");
         const closeLootModal = document.getElementById("closeLootModal");
         const sellLoot = document.getElementById("sellLoot");
         const sellAllLoot = document.getElementById("sellAllLoot");
@@ -699,6 +859,9 @@
         const statsUniqueItems = document.getElementById("statsUniqueItems");
         const statsCriticalHits = document.getElementById("statsCriticalHits");
         const statsCoins = document.getElementById("statsCoins");
+            const statsPlayerLevel = document.getElementById("statsPlayerLevel");
+            const statsPlayerXp = document.getElementById("statsPlayerXp");
+            const statsBossDamage = document.getElementById("statsBossDamage");
         const adminTools = document.getElementById("adminTools");
         const resetProgress = document.getElementById("resetProgress");
         const adminGetLoot = document.getElementById("adminGetLoot");
@@ -714,6 +877,178 @@
             }
         }
 
+        function normalizeUpgradeLevel(level, maxLevel){
+            const numericLevel = Number(level);
+            return Number.isFinite(numericLevel) ? Math.min(maxLevel, Math.max(0, Math.floor(numericLevel))) : 0;
+        }
+
+        function normalizePlayerLevel(level){
+            const numericLevel = Number(level);
+            return Number.isFinite(numericLevel) ? Math.min(10000, Math.max(1, Math.floor(numericLevel))) : 1;
+        }
+
+        function calculateScaledValue(baseValue, scalingFactor, level){
+            const exponent = Math.min(500, normalizePlayerLevel(level) - 1);
+            return Math.min(balanceConfig.maxScaledValue, baseValue * Math.pow(scalingFactor, exponent));
+        }
+
+        function formatGameNumber(value){
+            return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value);
+        }
+
+        function getBossMaxHealth(level){
+            return calculateScaledValue(balanceConfig.baseBossHealth, balanceConfig.bossHealthScaling, level);
+        }
+
+        function getXpRequired(level){
+            return Math.max(1, Math.ceil(calculateScaledValue(
+                balanceConfig.baseXpToNextLevel,
+                balanceConfig.xpRequirementScaling,
+                level
+            )));
+        }
+
+        function calculateItemAttackDamage(item){
+            const rarityMultiplier = balanceConfig.rarityDamageMultipliers[item.rarity] || 1;
+            return balanceConfig.baseItemAttackDamage * rarityMultiplier;
+        }
+
+        function getItemAttackDamage(item){
+            const baseDamage = Number.isFinite(Number(item.attackDamage)) && Number(item.attackDamage) >= 0
+                ? Number(item.attackDamage)
+                : calculateItemAttackDamage(item);
+            const upgradeLevel = Number.isFinite(Number(item.upgradeLevel)) ? Math.max(0, Number(item.upgradeLevel)) : 0;
+            return baseDamage * Math.pow(balanceConfig.itemUpgradeScaling, upgradeLevel);
+        }
+
+        function getShopUpgradeLevel(upgrade){
+            const value = shopState[upgrade.stateKey];
+            return upgrade.stateKey === "autoTap" ? (value === true ? 1 : 0) : normalizeUpgradeLevel(value, upgrade.maxLevel);
+        }
+
+        function getShopUpgradeCost(upgrade, level = getShopUpgradeLevel(upgrade)){
+            return Math.ceil(upgrade.baseCost * Math.pow(upgrade.costGrowth, level));
+        }
+
+        function getShopUpgradeUnlockLevel(upgrade, level = getShopUpgradeLevel(upgrade)){
+            return upgrade.unlockLevels ? upgrade.unlockLevels[level] : upgrade.unlockLevel;
+        }
+
+        function getTapDamage(){
+            return 1 + shopState.tapPower;
+        }
+
+        function getAutoTapDamagePerSecond(){
+            return shopState.autoTap ? getTapDamage() * (1 + shopState.critChance * 0.05) : 0;
+        }
+
+        function getItemDamageMultiplier(){
+            return 1 + shopState.itemDamageLevel * balanceConfig.itemDamageBonusPerLevel;
+        }
+
+        function getBossBountyReward(){
+            return Math.floor(balanceConfig.baseBossBounty * (1 + shopState.bossBountyLevel * balanceConfig.bountyBonusPerLevel));
+        }
+
+        function getLuckAdjustedWeight(item, luckLevel = shopState.lootLuckLevel){
+            const rarityIndex = balanceConfig.rarityLuckIndex[item.rarity] || 0;
+            return item.weight * Math.pow(balanceConfig.luckWeightStep, luckLevel * rarityIndex);
+        }
+
+        function getRarityOdds(luckLevel = shopState.lootLuckLevel){
+            const weightedItems = lootTable.filter((item) => Number.isFinite(Number(item.weight)) && Number(item.weight) > 0);
+            const totalWeight = weightedItems.reduce((sum, item) => sum + getLuckAdjustedWeight(item, luckLevel), 0);
+            return Object.keys(balanceConfig.rarityLuckIndex).reduce((odds, rarity) => {
+                const rarityWeight = weightedItems
+                    .filter((item) => item.rarity === rarity)
+                    .reduce((sum, item) => sum + getLuckAdjustedWeight(item, luckLevel), 0);
+                odds[rarity] = totalWeight > 0 ? rarityWeight / totalWeight : 0;
+                return odds;
+            }, {});
+        }
+
+        function getItemBossDamagePerSecond(){
+            let damagePerSecond = 0;
+            for (const inventoryItem of inventoryItems.values()){
+                const quantity = Number.isFinite(inventoryItem.quantity) ? Math.max(0, inventoryItem.quantity) : 0;
+                const itemDamage = getItemAttackDamage(inventoryItem.item);
+                if (Number.isFinite(itemDamage)){
+                    damagePerSecond += itemDamage * quantity;
+                }
+            }
+            return damagePerSecond;
+        }
+
+        function getEffectiveItemAttackDamage(item){
+            return getItemAttackDamage(item) * getItemDamageMultiplier();
+        }
+
+        function renderInventoryDamage(){
+            for (const inventoryItem of inventoryItems.values()){
+                inventoryItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(inventoryItem.item) * inventoryItem.quantity)}/s`;
+            }
+        }
+
+        function getTotalBossDamagePerSecond(){
+            return getItemBossDamagePerSecond() * getItemDamageMultiplier() + getAutoTapDamagePerSecond();
+        }
+
+        function renderProgression(){
+            const xpRequired = getXpRequired(progressState.level);
+            playerLevel.textContent = progressState.level;
+            xpText.textContent = `${formatGameNumber(progressState.xp)} / ${formatGameNumber(xpRequired)}`;
+            xpProgress.max = xpRequired;
+            xpProgress.value = Math.min(progressState.xp, xpRequired);
+        }
+
+        function renderBossDamage(){
+            const damagePerSecond = getTotalBossDamagePerSecond();
+            totalBossDamage.textContent = `Total Boss Damage: ${formatGameNumber(damagePerSecond)}/s`;
+        }
+
+        function renderBoss(){
+            bossLevelLabel.textContent = `Boss level ${currentBossLevel}`;
+            healthBar.textContent = `${formatGameNumber(health)} / ${formatGameNumber(getBossMaxHealth(currentBossLevel))}`;
+        }
+
+        function beginNextBoss(){
+            currentBossLevel = progressState.level;
+            health = getBossMaxHealth(currentBossLevel);
+            bossRewarded = false;
+            buttonGober.disabled = false;
+            buttonGetLoot.disabled = true;
+            renderBoss();
+        }
+
+        function awardBossExperience(defeatedLevel){
+            const reward = Math.max(1, Math.floor(calculateScaledValue(
+                balanceConfig.baseBossXp,
+                balanceConfig.bossXpScaling,
+                defeatedLevel
+            )));
+            const bounty = getBossBountyReward();
+            progressState.xp += reward;
+            playerGold += bounty;
+            let levelsGained = 0;
+
+            while (progressState.xp >= getXpRequired(progressState.level)){
+                progressState.xp -= getXpRequired(progressState.level);
+                progressState.level = normalizePlayerLevel(progressState.level + 1);
+                levelsGained += 1;
+                if (progressState.level >= 10000){
+                    break;
+                }
+            }
+
+            renderProgression();
+            saveGold();
+            updateShopButtons();
+            tapFeedback.textContent = levelsGained > 0
+                ? `Boss defeated! +${reward} XP, +${bounty} coins. Level ${progressState.level}!`
+                : `Boss defeated! +${reward} XP, +${bounty} coins.`;
+            saveGame();
+        }
+
         if (window.location.hash.toLowerCase() === "#admin"){
             adminTools.hidden = false;
             document.body.classList.add("admin-mode");
@@ -722,10 +1057,19 @@
         goldAmount.textContent = playerGold;
         ensureDailyMission();
         renderDailyMission();
+        renderProgression();
+        renderBoss();
+        renderBossDamage();
 
         buttonGober.addEventListener("click", goberMine);
         buttonGetLoot.addEventListener("click", getRandomLoot);
         shopButtons.forEach((button) => button.addEventListener("click", () => buyShopItem(button.dataset.shopItem)));
+        shopUpgradeCategories.addEventListener("click", (event) => {
+            const button = event.target.closest("button[data-upgrade]");
+            if (button){
+                buyShopItem(button.dataset.upgrade);
+            }
+        });
         closeLootModal.addEventListener("click", () => lootModal.close());
         sellLoot.addEventListener("click", sellSelectedItem);
         sellAllLoot.addEventListener("click", sellAllSelectedLoot);
@@ -749,7 +1093,7 @@
         function goberMine(){
             progressState.totalTaps += 1;
             const isCritical = Math.random() < shopState.critChance * 0.05;
-            const damage = (1 + shopState.tapPower) * (isCritical ? 2 : 1);
+            const damage = getTapDamage() * (isCritical ? 2 : 1);
             if (isCritical){
                 progressState.criticalHits += 1;
                 tapFeedback.textContent = `Critical hit! ${damage} damage`;
@@ -761,14 +1105,18 @@
         }
 
         function damageDomer(damage){
-            if (health <= 0){
+            if (health <= 0 || !Number.isFinite(damage) || damage <= 0){
                 return;
             }
 
             health = Math.max(0, health - damage);
-            healthBar.textContent = health;
+            renderBoss();
 
             if (health === 0){
+                if (!bossRewarded){
+                    bossRewarded = true;
+                    awardBossExperience(currentBossLevel);
+                }
                 buttonGober.disabled = true;
                 buttonGetLoot.disabled = false;
             }
@@ -788,40 +1136,78 @@
             renderDailyMission();
             saveGame();
 
-            health = maxHealth;
-            healthBar.textContent = health;
-            buttonGober.disabled = false;
-            buttonGetLoot.disabled = true;
+            beginNextBoss();
         }
 
         const shopItems = {
-            tapPower: {
-                getCost: () => 40 + shopState.tapPower * 30,
-                buy: () => shopState.tapPower < 10 ? (shopState.tapPower += 1, true) : false,
-                label: () => shopState.tapPower >= 10 ? "Max level" : `Buy for ${40 + shopState.tapPower * 30} coins`
-            },
-            autoTap: {
-                cost: 250,
-                buy: () => {
-                    if (shopState.autoTap) return false;
-                    shopState.autoTap = true;
-                    return true;
-                },
-                label: () => shopState.autoTap ? "Owned" : "Buy for 250 coins"
-            },
-            critChance: {
-                getCost: () => 80 + shopState.critChance * 60,
-                buy: () => shopState.critChance < 5 ? (shopState.critChance += 1, true) : false,
-                label: () => shopState.critChance >= 5 ? "Max level" : `Buy for ${80 + shopState.critChance * 60} coins`
-            },
             sunset: { cost: 160, cosmetic: "sunset", type: "theme", label: () => "Buy for 160 coins" },
             neonFrame: { cost: 220, cosmetic: "neon", type: "frame", label: () => "Buy for 220 coins" },
             goldFrame: { cost: 180, cosmetic: "gold", type: "frame", label: () => "Buy for 180 coins" }
         };
 
+        function renderUpgradeShop(){
+            const categories = ["Tapping", "Economy", "Combat", "Items & Loot"];
+            shopUpgradeCategories.replaceChildren();
+
+            for (const category of categories){
+                const upgrades = Object.entries(shopUpgradeConfig).filter(([, upgrade]) => upgrade.category === category);
+                if (upgrades.length === 0){
+                    continue;
+                }
+
+                const section = document.createElement("section");
+                const heading = document.createElement("h3");
+                const grid = document.createElement("div");
+                section.className = "shopCategory";
+                heading.textContent = category;
+                grid.className = "shopGrid";
+                section.append(heading, grid);
+
+                for (const [upgradeId, upgrade] of upgrades){
+                    const level = getShopUpgradeLevel(upgrade);
+                    const nextLevel = Math.min(level + 1, upgrade.maxLevel);
+                    const requiredLevel = getShopUpgradeUnlockLevel(upgrade, level);
+                    const locked = progressState.level < requiredLevel;
+                    const maxed = level >= upgrade.maxLevel;
+                    const card = document.createElement("article");
+                    const name = document.createElement("h3");
+                    const description = document.createElement("p");
+                    const levelLabel = document.createElement("p");
+                    const lockLabel = document.createElement("p");
+                    const button = document.createElement("button");
+
+                    card.className = "shopItem";
+                    name.textContent = upgrade.name;
+                    description.textContent = upgrade.description;
+                    levelLabel.className = "shopItemMeta";
+                    levelLabel.textContent = `Current level: ${level} / ${upgrade.maxLevel}`;
+                    lockLabel.className = "shopItemUnlock";
+                    lockLabel.textContent = locked
+                        ? `Unlocks at Player Level ${requiredLevel}.`
+                        : upgrade.unlockLevels && !maxed
+                            ? `Next rank unlocks at Player Level ${getShopUpgradeUnlockLevel(upgrade, nextLevel)}.`
+                            : "";
+                    button.type = "button";
+                    button.dataset.upgrade = upgradeId;
+                    button.disabled = locked || maxed;
+                    button.textContent = maxed ? "Max level" : locked ? `Unlocks at Level ${requiredLevel}` : `Buy for ${getShopUpgradeCost(upgrade)} coins`;
+                    card.append(name, description, levelLabel);
+                    if (lockLabel.textContent){
+                        card.append(lockLabel);
+                    }
+                    card.append(button);
+                    grid.append(card);
+                }
+
+                shopUpgradeCategories.append(section);
+            }
+        }
+
         function saveShop(){
             localStorage.setItem(shopStorageKey, JSON.stringify(shopState));
             saveGame();
+            renderBossDamage();
+            renderInventoryDamage();
         }
 
         function ownsCosmetic(item){
@@ -829,6 +1215,38 @@
         }
 
         function buyShopItem(itemId){
+            const upgrade = shopUpgradeConfig[itemId];
+            if (upgrade){
+                const level = getShopUpgradeLevel(upgrade);
+                const requiredLevel = getShopUpgradeUnlockLevel(upgrade, level);
+                if (progressState.level < requiredLevel){
+                    shopStatus.textContent = `Unlocks at Player Level ${requiredLevel}.`;
+                    return;
+                }
+                if (level >= upgrade.maxLevel){
+                    shopStatus.textContent = "That upgrade is already maxed out.";
+                    return;
+                }
+
+                const cost = getShopUpgradeCost(upgrade, level);
+                if (playerGold < cost){
+                    shopStatus.textContent = `You need ${cost - playerGold} more coins.`;
+                    return;
+                }
+
+                if (upgrade.stateKey === "autoTap"){
+                    shopState.autoTap = true;
+                } else {
+                    shopState[upgrade.stateKey] = level + 1;
+                }
+                playerGold -= cost;
+                saveGold();
+                saveShop();
+                updateShopButtons();
+                shopStatus.textContent = `Purchased ${upgrade.name}.`;
+                return;
+            }
+
             const item = shopItems[itemId];
 
             if (!item){
@@ -843,12 +1261,6 @@
             const cost = item.getCost ? item.getCost() : item.cost;
             if (playerGold < cost){
                 shopStatus.textContent = `You need ${cost - playerGold} more coins.`;
-                return;
-            }
-
-            if (item.buy && !item.buy()){
-                shopStatus.textContent = "That upgrade is already maxed out.";
-                updateShopButtons();
                 return;
             }
 
@@ -889,6 +1301,7 @@
         }
 
         function updateShopButtons(){
+            renderUpgradeShop();
             shopButtons.forEach((button) => {
                 const item = shopItems[button.dataset.shopItem];
                 if (item.cosmetic && ownsCosmetic(item)){
@@ -898,30 +1311,26 @@
                     button.disabled = equipped;
                 } else {
                     button.textContent = item.label();
-                    button.disabled = itemIdIsMaxed(item);
+                    button.disabled = false;
                 }
             });
         }
 
-        function itemIdIsMaxed(item){
-            return item === shopItems.tapPower && shopState.tapPower >= 10 ||
-                item === shopItems.autoTap && shopState.autoTap ||
-                item === shopItems.critChance && shopState.critChance >= 5;
-        }
-
+        let lastCombatUpdate = performance.now();
         setInterval(() => {
-            if (shopState.autoTap){
-                damageDomer(1);
-            }
-        }, 1000);
+            const now = performance.now();
+            const elapsedSeconds = Math.min((now - lastCombatUpdate) / 1000, 1);
+            lastCombatUpdate = now;
+            damageDomer(getTotalBossDamagePerSecond() * elapsedSeconds);
+        }, 100);
 
         function pickRandomLoot(){
             const weightedItems = lootTable.filter((item) => Number.isFinite(Number(item.weight)) && Number(item.weight) > 0);
-            const totalWeight = weightedItems.reduce((sum, item) => sum + Number(item.weight), 0);
+            const totalWeight = weightedItems.reduce((sum, item) => sum + getLuckAdjustedWeight(item), 0);
             let random = Math.random() * totalWeight;
 
             for (const item of weightedItems){
-                random -= Number(item.weight);
+                random -= getLuckAdjustedWeight(item);
                 if (random <= 0){
                     return item;
                 }
@@ -940,7 +1349,9 @@
             if (existingItem){
                 existingItem.quantity += quantity;
                 existingItem.quantityElement.textContent = `x${existingItem.quantity}`;
+                existingItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(existingItem.item) * existingItem.quantity)}/s`;
                 sortInventory();
+                renderBossDamage();
                 if (save){
                     saveInventory();
                 }
@@ -949,26 +1360,35 @@
 
             const collectedItem = document.createElement("div");
             const collectedImage = document.createElement("img");
+            const collectedInfo = document.createElement("div");
             const collectedName = document.createElement("span");
+            const collectedDamage = document.createElement("span");
             const collectedQuantity = document.createElement("span");
 
             collectedItem.className = "inventoryItem";
             collectedItem.style.backgroundColor = item.color;
             collectedImage.src = item.image;
             collectedImage.alt = item.name;
+            collectedInfo.className = "inventoryItemInfo";
+            collectedName.className = "inventoryItemName";
             collectedName.textContent = item.name;
+            collectedDamage.className = "inventoryItemDamage";
+            collectedDamage.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(item) * quantity)}/s`;
             collectedQuantity.className = "inventoryQuantity";
             collectedQuantity.textContent = `x${quantity}`;
-            collectedItem.append(collectedImage, collectedName, collectedQuantity);
+            collectedInfo.append(collectedName, collectedDamage);
+            collectedItem.append(collectedImage, collectedInfo, collectedQuantity);
             collectedItem.addEventListener("click", () => showLootModal(item, true));
             inventory.appendChild(collectedItem);
             inventoryItems.set(item.name, {
                 quantity,
                 item,
                 element: collectedItem,
-                quantityElement: collectedQuantity
+                quantityElement: collectedQuantity,
+                damageElement: collectedDamage
             });
             sortInventory();
+            renderBossDamage();
             if (save){
                 saveInventory();
             }
@@ -996,17 +1416,19 @@
                 quantity: item.quantity
             }));
             localStorage.setItem(inventoryStorageKey, JSON.stringify(savedInventory));
+            saveGame();
         }
 
         function saveGold(){
             localStorage.setItem(goldStorageKey, playerGold);
             goldAmount.textContent = playerGold;
             saveGame();
+            updateShopButtons();
         }
 
         function saveGame(){
             localStorage.setItem(saveStorageKey, JSON.stringify({
-                version: 1,
+                version: 3,
                 coins: playerGold,
                 shop: shopState,
                 progress: progressState,
@@ -1018,6 +1440,9 @@
         }
 
         function showPlayerStats(){
+            statsPlayerLevel.textContent = progressState.level;
+            statsPlayerXp.textContent = `${formatGameNumber(progressState.xp)} / ${formatGameNumber(getXpRequired(progressState.level))}`;
+            statsBossDamage.textContent = `${formatGameNumber(getTotalBossDamagePerSecond())}/s`;
             statsDomersKilled.textContent = progressState.totalMined;
             statsGoberTaps.textContent = progressState.totalTaps;
             statsUniqueItems.textContent = `${progressState.uniqueItems.length} / ${lootTable.length}`;
@@ -1073,18 +1498,19 @@
         }
 
         function runRaritySimulation(){
-            const rarities = ["common", "uncommon", "rare", "epic", "legendary"];
+            const rarities = ["common", "uncommon", "rare", "epic", "legendary", "mythic"];
+            const generations = 1000000;
             const results = rarities.reduce((counts, rarity) => {
                 counts[rarity] = 0;
                 return counts;
             }, {});
 
-            for (let generation = 0; generation < 1000; generation++){
+            for (let generation = 0; generation < generations; generation++){
                 results[pickRandomLoot().rarity] += 1;
             }
 
             adminRarityResults.innerHTML = rarities.map((rarity) => `
-                <tr><td>${rarity}</td><td>${results[rarity]}</td><td>${(results[rarity] / 10).toFixed(1)}%</td></tr>
+                <tr><td>${rarity}</td><td>${results[rarity]}</td><td>${(results[rarity] * 100 / generations).toFixed(3)}%</td></tr>
             `).join("");
         }
 
@@ -1111,6 +1537,7 @@
             lootName.textContent = item.name;
             lootRarity.textContent = item.rarity;
             lootPrice.textContent = item.price;
+            lootBossDamage.textContent = `+${formatGameNumber(getEffectiveItemAttackDamage(item))}/s`;
             sellLoot.textContent = `Sell for ${item.price} gold`;
             sellLoot.hidden = !fromInventory;
             sellAllLoot.hidden = !fromInventory;
@@ -1137,9 +1564,11 @@
                 inventoryItems.delete(selectedItem.name);
             } else {
                 inventoryItem.quantityElement.textContent = `x${inventoryItem.quantity}`;
+                inventoryItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(inventoryItem.item) * inventoryItem.quantity)}/s`;
             }
 
             saveInventory();
+            renderBossDamage();
             lootModal.close();
             selectedItem = null;
         }
@@ -1160,6 +1589,7 @@
             inventoryItems.delete(selectedItem.name);
             saveGold();
             saveInventory();
+            renderBossDamage();
             lootModal.close();
             selectedItem = null;
         }
@@ -1179,16 +1609,16 @@
             { name: "normo", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/normo.png"},
 
             //uncommon
-            { name: "bart", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/bart.png"},
-            { name: "blart", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/blart.png"},
-            { name: "bar", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/bar.png"},
-            { name: "cromer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/cromer.png"},
-            { name: "dooker", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/dooker.png"},
-            { name: "adolmer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/adolmer.png"},
-            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/sidedome_bob.png"},
-            { name: "homer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/homer.png"},
-            { name: "mini domer", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/mini_domer.png"},
-            { name: "lollibart", rarity: "uncommon", price: 10, weight: 30, color: "#f5dda2", image: "media/lollibart.png"},
+            { name: "bart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/bart.png"},
+            { name: "blart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/blart.png"},
+            { name: "bar", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/bar.png"},
+            { name: "cromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/cromer.png"},
+            { name: "dooker", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/dooker.png"},
+            { name: "adolmer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/adolmer.png"},
+            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/sidedome_bob.png"},
+            { name: "homer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/homer.png"},
+            { name: "mini domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/mini_domer.png"},
+            { name: "lollibart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/lollibart.png"},
 
 
             //rare
@@ -1210,14 +1640,23 @@
             { name: "domerman", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/domerman.png"},
 
             //legendary
-            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", image: "media/claymer.png"}
+            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", image: "media/claymer.png"},
+
+            //mythic
+            { name: "void domer", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", image: "media/domer.jpg"}
             
 
-        ];
+        ].map((item) => ({
+            ...item,
+            weight: balanceConfig.rarityPullWeights[item.rarity] ?? item.weight,
+            attackDamage: calculateItemAttackDamage(item),
+            upgradeLevel: 0
+        }));
 
         applySavedCosmetics();
         updateShopButtons();
         loadInventory();
+        renderBossDamage();
         saveGame();
     </script>
 
