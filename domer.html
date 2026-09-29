@@ -47,23 +47,13 @@
 
         #playerGold {
             display: inline-block;
-            margin-top: 14px;
+            margin: 0 0 12px;
             padding: 8px 14px;
             color: #674d08;
             background: #f5dda2;
             border: 1px solid #e4c86f;
             border-radius: 20px;
             font-weight: bold;
-        }
-
-        #statsButton {
-            display: block;
-            margin: 12px auto 0;
-            padding: 8px 14px;
-            color: #1f4d4a;
-            background: #c9e7df;
-            border: 1px solid #9fcfc2;
-            font-size: 0.9rem;
         }
 
         #progressionSummary {
@@ -84,10 +74,6 @@
             width: 100%;
             height: 12px;
             accent-color: #397c76;
-        }
-
-        #statsButton:hover:not(:disabled) {
-            background: #a9d7cc;
         }
 
         .main {
@@ -416,6 +402,50 @@
             border-radius: 8px;
         }
 
+        #viewAllInventory {
+            width: 100%;
+            margin: 8px 0 0;
+        }
+
+        #inventoryModal {
+            width: min(calc(100% - 32px), 920px);
+            max-height: min(85vh, 800px);
+            overflow-y: auto;
+        }
+
+        .inventoryModalContent {
+            padding: 20px;
+        }
+
+        .inventoryModalHeader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .inventoryModalHeader h2 {
+            margin: 0;
+            color: #1f4d4a;
+        }
+
+        #closeInventoryModal {
+            flex: 0 0 auto;
+            margin: 0;
+        }
+
+        .inventoryGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+            gap: 10px;
+        }
+
+        .inventoryGrid .inventoryItem {
+            min-width: 0;
+            margin: 0;
+        }
+
         #totalBossDamage {
             margin: 0 0 10px;
             color: #1f4d4a;
@@ -437,6 +467,76 @@
             margin: 8px 0 0;
             padding: 8px;
             font-size: 0.85rem;
+        }
+
+        .podImage {
+            display: block;
+            width: 100%;
+            height: 120px;
+            margin: 0;
+            object-fit: contain;
+        }
+
+        .podPreview {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            min-height: 120px;
+            flex: 1 0 120px;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 0 12px;
+        }
+
+        .podPreview[data-odds-open="true"] {
+            z-index: 5;
+        }
+
+        .podImage:focus-visible {
+            outline: 3px solid #1f4d4a;
+            outline-offset: 3px;
+        }
+
+        .podOddsTooltip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: none;
+            width: min(230px, calc(100vw - 64px));
+            padding: 10px 12px;
+            color: #fffdf9;
+            background: #263238;
+            border: 1px solid rgb(255 253 249 / 24%);
+            border-radius: 6px;
+            box-shadow: 0 8px 20px rgb(38 50 56 / 28%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+
+        .podPreview[data-odds-open="true"] .podOddsTooltip {
+            display: grid;
+            gap: 5px;
+        }
+
+        @media (hover: hover) {
+            .podPreview:hover,
+            .podPreview:focus-within {
+                z-index: 5;
+            }
+
+            .podPreview:hover .podOddsTooltip,
+            .podPreview:focus-within .podOddsTooltip {
+                display: grid;
+                gap: 5px;
+            }
+        }
+
+        .podOddsRow {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.88rem;
+            line-height: 1.25;
         }
 
         .inventoryItem {
@@ -547,22 +647,67 @@
             color: #607d7b;
         }
 
-        .playerStats {
-            display: grid;
-            gap: 8px;
-            margin: 0 0 18px;
+        #collectionProgressButton {
+            display: block;
+            margin: 12px auto 0;
+            padding: 8px 14px;
+            color: #1f4d4a;
+            background: #c9e7df;
+            border: 1px solid #9fcfc2;
+            font-size: 0.9rem;
         }
 
-        .playerStat {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 12px;
-            background: #edf5f1;
-            border-radius: 6px;
+        #collectionModal {
+            width: min(calc(100% - 32px), 420px);
+            max-height: min(85vh, 700px);
+            overflow-y: auto;
         }
 
-        .playerStat span:first-child {
-            color: #607d7b;
+        #collectionTable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+        }
+
+        #collectionTable th,
+        #collectionTable td {
+            padding: 4px 6px;
+            border-bottom: 1px solid #d8e3df;
+        }
+
+        #collectionTable thead th,
+        #collectionTable tfoot th,
+        #collectionTotal {
+            color: #526a66;
+            font-weight: bold;
+        }
+
+        #collectionTable th:first-child {
+            text-align: left;
+        }
+
+        #collectionTable td:last-child,
+        #collectionTable tfoot th:last-child {
+            text-align: right;
+        }
+
+        #collectionTable tfoot th {
+            padding-top: 8px;
+            border-bottom: 0;
+        }
+
+        .collectionRarityLabel {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .collectionRaritySwatch {
+            width: 11px;
+            height: 11px;
+            flex: 0 0 11px;
+            border: 1px solid rgb(38 50 56 / 25%);
+            border-radius: 3px;
         }
 
         #sellLoot {
@@ -620,13 +765,6 @@
             background: var(--theme-button-hover);
         }
 
-        body[class*="theme-"] #statsButton {
-            color: #fffdf9;
-            background: var(--theme-button);
-            border-color: var(--theme-button-hover);
-        }
-
-        body[class*="theme-"] #statsButton:hover:not(:disabled),
         body[class*="theme-"] #sellLoot:hover:not(:disabled),
         body[class*="theme-"] #sellAllLoot:hover:not(:disabled) {
             background: var(--theme-button-hover);
@@ -638,19 +776,24 @@
             background: var(--theme-button);
         }
 
+        body[class*="theme-"] #collectionProgressButton {
+            color: #fffdf9;
+            background: var(--theme-button);
+            border-color: var(--theme-button-hover);
+        }
+
     </style>
 </head>
 <body>
     <header>
         <h1>Domer</h1>
         <h2>KILL DOBBER</h2>
-        <div id="playerGold">Coins: <span id="goldAmount">0</span></div>
         <div id="progressionSummary" aria-live="polite">
             <p><span>Player level</span><strong id="playerLevel">1</strong></p>
             <p><span>XP</span><strong id="xpText">0 / 100</strong></p>
             <progress id="xpProgress" max="100" value="0" aria-label="Experience toward next level"></progress>
         </div>
-        <button id="statsButton" type="button">View stats</button>
+        <button id="collectionProgressButton" type="button">Collection progress</button>
     </header>
 
     <div class="main">
@@ -671,6 +814,7 @@
                 <div id="inventory">
                     
                 </div>
+                <button id="viewAllInventory" type="button">View All</button>
                 <div class="dailyMission">
                     <strong>Daily mission</strong>
                     <div id="dailyMissionText">Mine 5 Domers: 0 / 5</div>
@@ -680,9 +824,39 @@
         </div>
 
         <section class="shop" aria-labelledby="shopTitle">
+            <div id="playerGold">Coins: <span id="goldAmount">0</span></div>
             <h2 id="shopTitle">Domer shop</h2>
             <p class="shopIntro">Choose permanent upgrades for tapping, income, item damage, and loot odds.</p>
             <div id="shopUpgradeCategories"></div>
+            <section class="shopCategory" aria-labelledby="podShopTitle">
+                <h3 id="podShopTitle">Gacha pods</h3>
+                <div class="shopGrid">
+                    <article class="shopItem">
+                        <h3>Basic Pod</h3>
+                        <div class="podPreview">
+                            <img class="podImage" src="media/pod_basic.png" alt="Basic pod placeholder" tabindex="0" aria-expanded="false" aria-describedby="basicPodOdds">
+                            <div class="podOddsTooltip" id="basicPodOdds" data-pod-id="basicPod" role="tooltip"></div>
+                        </div>
+                        <button class="shopButton" data-shop-item="basicPod" type="button">Open for 250 coins</button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Rare Pod</h3>
+                        <div class="podPreview">
+                            <img class="podImage" src="media/pod_rare.png" alt="Rare pod placeholder" tabindex="0" aria-expanded="false" aria-describedby="rarePodOdds">
+                            <div class="podOddsTooltip" id="rarePodOdds" data-pod-id="rarePod" role="tooltip"></div>
+                        </div>
+                        <button class="shopButton" data-shop-item="rarePod" type="button">Open for 600 coins</button>
+                    </article>
+                    <article class="shopItem">
+                        <h3>Void Pod</h3>
+                        <div class="podPreview">
+                            <img class="podImage" src="media/pod_premium.png" alt="Legendary and Mythic pod placeholder" tabindex="0" aria-expanded="false" aria-describedby="premiumPodOdds">
+                            <div class="podOddsTooltip" id="premiumPodOdds" data-pod-id="premiumPod" role="tooltip"></div>
+                        </div>
+                        <button class="shopButton" data-shop-item="premiumPod" type="button">Open for 6,000 coins</button>
+                    </article>
+                </div>
+            </section>
             <section class="shopCategory" aria-labelledby="cosmeticShopTitle">
                 <h3 id="cosmeticShopTitle">Cosmetics</h3>
                 <div class="shopGrid">
@@ -771,6 +945,10 @@
                     <strong id="lootRarity"></strong>
                 </div>
                 <div class="lootStat">
+                    <span>Art by</span>
+                    <strong id="lootArtist"></strong>
+                </div>
+                <div class="lootStat">
                     <span>Price</span>
                     <strong><span id="lootPrice"></span> gold</strong>
                 </div>
@@ -785,48 +963,34 @@
         </div>
     </dialog>
 
-    <dialog id="statsModal">
-        <div class="lootModalContent">
-            <h2>Player stats</h2>
-            <div class="playerStats">
-                <div class="playerStat">
-                    <span>Level</span>
-                    <strong id="statsPlayerLevel">1</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Experience</span>
-                    <strong id="statsPlayerXp">0</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Boss damage</span>
-                    <strong id="statsBossDamage">0/s</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Domers killed</span>
-                    <strong id="statsDomersKilled">0</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Gober taps</span>
-                    <strong id="statsGoberTaps">0</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Domers collected</span>
-                    <strong id="statsUniqueItems">0 / 0</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Critical hits</span>
-                    <strong id="statsCriticalHits">0</strong>
-                </div>
-                <div class="playerStat">
-                    <span>Coins</span>
-                    <strong id="statsCoins">0</strong>
-                </div>
+    <dialog id="inventoryModal" aria-labelledby="inventoryModalTitle">
+        <div class="inventoryModalContent">
+            <div class="inventoryModalHeader">
+                <h2 id="inventoryModalTitle">All items</h2>
+                <button id="closeInventoryModal" type="button">Close</button>
             </div>
-            <button id="closeStatsModal" type="button">Close</button>
+            <div id="allInventory" class="inventoryGrid"></div>
         </div>
     </dialog>
 
-    
+    <dialog id="collectionModal" aria-labelledby="collectionModalTitle">
+        <div class="inventoryModalContent">
+            <div class="inventoryModalHeader">
+                <h2 id="collectionModalTitle">Collection progress</h2>
+                <button id="closeCollectionModal" type="button">Close</button>
+            </div>
+            <table id="collectionTable">
+                <thead>
+                    <tr><th scope="col">Rarity</th><th scope="col">Collected</th></tr>
+                </thead>
+                <tbody id="collectionLegendRows"></tbody>
+                <tfoot>
+                    <tr><th scope="row">Total</th><th id="collectionTotal">0 / 0 (0%)</th></tr>
+                </tfoot>
+            </table>
+        </div>
+    </dialog>
+
     <script>
         const maxHealth = 100;
         const balanceConfig = {
@@ -857,9 +1021,8 @@
             },
             baseBossBounty: 20,
             bossBountyLevelScaling: 0.03,
-            bountyBonusPerLevel: 0.15,
+            bountyBonusPerLevel: 0.25,
             manualTapsPerCoin: 10,
-            tapDamageScaling: 1.08,
             itemDamageBonusPerLevel: 0.06,
             luckWeightStep: 1.08,
             rarityLuckIndex: {
@@ -874,26 +1037,53 @@
             maxScaledValue: 1e12
         };
         const shopUpgradeConfig = {
-            tapPower: { category: "Tapping", stateKey: "tapPower", name: "Tap Power", description: "Tapping does more damage.", maxLevel: 10, unlockLevel: 1, baseCost: 40, costGrowth: 1.45 },
-            autoTap: { category: "Tapping", stateKey: "autoTap", name: "Pocket Drill", description: "Drill that deals passive damage.", maxLevel: 1, unlockLevel: 1, baseCost: 250, costGrowth: 1 },
+            tapPower: { category: "Tapping", stateKey: "tapPower", name: "Tap Power", description: "Tapping does more damage.", maxLevel: 10, unlockLevels: [1, 10, 20, 35, 50, 65, 80, 100, 125, 150], baseCost: 40, costGrowth: 1.65 },
             critChance: { category: "Tapping", stateKey: "critChance", name: "Critical Training", description: "Increase crit-chance.", maxLevel: 5, unlockLevel: 1, baseCost: 80, costGrowth: 1.55 },
-            bossBounty: { category: "Economy", stateKey: "bossBountyLevel", name: "Boss Bounty", description: "More boss reward money.", maxLevel: 5, unlockLevel: 5, baseCost: 100, costGrowth: 1.8 },
+            bossBounty: { category: "Economy", stateKey: "bossBountyLevel", name: "Boss Bounty", description: "More boss reward money.", maxLevel: 10, unlockLevels: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50], baseCost: 100, costGrowth: 1.8 },
+            tapCoinPayout: { category: "Economy", stateKey: "tapCoinPayout", name: "Click Coin Payout", description: "Each level increases click coin payouts faster.", maxLevel: 15, unlockLevels: [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70], baseCost: 30, costGrowth: 1.45 },
             itemSynergy: { category: "Combat", stateKey: "itemDamageLevel", name: "Item Synergy", description: "Make your domers stronger.", maxLevel: 5, unlockLevel: 15, baseCost: 180, costGrowth: 1.55 },
             lootLuck: { category: "Items & Loot", stateKey: "lootLuckLevel", name: "Loot Luck", description: "Improve your chances of finding rarer domers.", maxLevel: 5, unlockLevels: [10, 20, 30, 40, 50], baseCost: 100, costGrowth: 2.2 }
+        };
+        const podConfig = {
+            basicPod: {
+                name: "Basic Pod",
+                price: 250,
+                unlockLevel: 1,
+                minimumRarityIndex: 0,
+                luckScale: 1,
+                rarityMultipliers: { common: 1, uncommon: 1, rare: 1, epic: 1, legendary: 1, mythic: 1 }
+            },
+            rarePod: {
+                name: "Rare Pod",
+                price: 600,
+                unlockLevel: 20,
+                minimumRarityIndex: 1,
+                luckScale: 1,
+                rarityMultipliers: { common: 0.55, uncommon: 0.65, rare: 2, epic: 2.8, legendary: 3.5, mythic: 3.5 }
+            },
+            premiumPod: {
+                name: "Void Pod",
+                price: 6000,
+                unlockLevel: 50,
+                minimumRarityIndex: 2,
+                luckScale: 0.25,
+                rarityMultipliers: { common: 0.1, uncommon: 0.15, rare: 0.35, epic: 1.5, legendary: 1, mythic: 12 }
+            }
         };
         var health = 0;
         var currentBossLevel = 1;
         var bossRewarded = false;
-        const inventoryStorageKey = "domerInventory";
-        const goldStorageKey = "domerGold";
-        const shopStorageKey = "domerShop";
-        const saveStorageKey = "domerSave";
+        const saveVersion = 2;
+        const inventoryStorageKey = `domerInventoryV${saveVersion}`;
+        const goldStorageKey = `domerGoldV${saveVersion}`;
+        const shopStorageKey = `domerShopV${saveVersion}`;
+        const saveStorageKey = `domerSaveV${saveVersion}`;
         const themeCosmetics = ["sunset", "arcade", "frost", "candy", "void"];
         const frameCosmetics = ["neon", "gold", "prism", "pixel", "thorn"];
         const defaultShopState = {
             tapPower: 0,
-            autoTap: false,
             critChance: 0,
+            tapCoinPayout: 1,
             bossBountyLevel: 0,
             itemDamageLevel: 0,
             lootLuckLevel: 0,
@@ -924,7 +1114,8 @@
         shopState.theme = themeCosmetics.includes(shopState.theme) ? shopState.theme : "default";
             shopState.tapPower = normalizeUpgradeLevel(shopState.tapPower, shopUpgradeConfig.tapPower.maxLevel);
             shopState.critChance = normalizeUpgradeLevel(shopState.critChance, shopUpgradeConfig.critChance.maxLevel);
-            shopState.autoTap = shopState.autoTap === true;
+            shopState.tapCoinPayout = Math.max(1, normalizeUpgradeLevel(shopState.tapCoinPayout, shopUpgradeConfig.tapCoinPayout.maxLevel));
+            delete shopState.autoTap;
             shopState.bossBountyLevel = normalizeUpgradeLevel(shopState.bossBountyLevel, shopUpgradeConfig.bossBounty.maxLevel);
             shopState.itemDamageLevel = normalizeUpgradeLevel(shopState.itemDamageLevel, shopUpgradeConfig.itemSynergy.maxLevel);
             shopState.lootLuckLevel = normalizeUpgradeLevel(shopState.lootLuckLevel, shopUpgradeConfig.lootLuck.maxLevel);
@@ -959,6 +1150,10 @@
         const buttonGober = document.getElementById("buttonGober");
         const buttonGetLoot = document.getElementById("buttonGetLoot");
         const inventory = document.getElementById("inventory");
+        const allInventory = document.getElementById("allInventory");
+        const inventoryModal = document.getElementById("inventoryModal");
+        const viewAllInventory = document.getElementById("viewAllInventory");
+        const closeInventoryModal = document.getElementById("closeInventoryModal");
             const shopUpgradeCategories = document.getElementById("shopUpgradeCategories");
         const tapFeedback = document.getElementById("tapFeedback");
         const dailyMissionText = document.getElementById("dailyMissionText");
@@ -977,6 +1172,7 @@
         const lootNew = document.getElementById("lootNew");
         const lootName = document.getElementById("lootName");
         const lootRarity = document.getElementById("lootRarity");
+        const lootArtist = document.getElementById("lootArtist");
         const lootPrice = document.getElementById("lootPrice");
             const lootBossDamage = document.getElementById("lootBossDamage");
         const closeLootModal = document.getElementById("closeLootModal");
@@ -985,17 +1181,11 @@
         const goldAmount = document.getElementById("goldAmount");
         const shopStatus = document.getElementById("shopStatus");
         const shopButtons = document.querySelectorAll(".shopButton");
-        const statsButton = document.getElementById("statsButton");
-        const statsModal = document.getElementById("statsModal");
-        const closeStatsModal = document.getElementById("closeStatsModal");
-        const statsDomersKilled = document.getElementById("statsDomersKilled");
-        const statsGoberTaps = document.getElementById("statsGoberTaps");
-        const statsUniqueItems = document.getElementById("statsUniqueItems");
-        const statsCriticalHits = document.getElementById("statsCriticalHits");
-        const statsCoins = document.getElementById("statsCoins");
-            const statsPlayerLevel = document.getElementById("statsPlayerLevel");
-            const statsPlayerXp = document.getElementById("statsPlayerXp");
-            const statsBossDamage = document.getElementById("statsBossDamage");
+        const collectionLegendRows = document.getElementById("collectionLegendRows");
+        const collectionTotal = document.getElementById("collectionTotal");
+        const collectionProgressButton = document.getElementById("collectionProgressButton");
+        const collectionModal = document.getElementById("collectionModal");
+        const closeCollectionModal = document.getElementById("closeCollectionModal");
         const adminTools = document.getElementById("adminTools");
         const adminAddCoins = document.getElementById("adminAddCoins");
         const resetProgress = document.getElementById("resetProgress");
@@ -1064,7 +1254,7 @@
 
         function getShopUpgradeLevel(upgrade){
             const value = shopState[upgrade.stateKey];
-            return upgrade.stateKey === "autoTap" ? (value === true ? 1 : 0) : normalizeUpgradeLevel(value, upgrade.maxLevel);
+            return normalizeUpgradeLevel(value, upgrade.maxLevel);
         }
 
         function getShopUpgradeCost(upgrade, level = getShopUpgradeLevel(upgrade)){
@@ -1077,11 +1267,12 @@
 
         function getTapDamage(){
             const tapLevel = normalizeUpgradeLevel(shopState.tapPower, shopUpgradeConfig.tapPower.maxLevel);
-            return Math.round((1 + tapLevel) * Math.pow(balanceConfig.tapDamageScaling, tapLevel));
+            return Math.pow(3, tapLevel);
         }
 
-        function getAutoTapDamagePerSecond(){
-            return shopState.autoTap ? getTapDamage() * (1 + shopState.critChance * 0.05) : 0;
+        function getTapCoinPayout(){
+            const payoutLevel = normalizeUpgradeLevel(shopState.tapCoinPayout, shopUpgradeConfig.tapCoinPayout.maxLevel);
+            return Math.pow(payoutLevel, 2);
         }
 
         function getItemDamageMultiplier(){
@@ -1094,21 +1285,11 @@
             return Math.floor(balanceConfig.baseBossBounty * levelReward * upgradeReward);
         }
 
-        function getLuckAdjustedWeight(item, luckLevel = shopState.lootLuckLevel){
+        function getLuckAdjustedWeight(item, luckLevel = shopState.lootLuckLevel, pod = null){
             const rarityIndex = balanceConfig.rarityLuckIndex[item.rarity] || 0;
-            return item.weight * Math.pow(balanceConfig.luckWeightStep, luckLevel * rarityIndex);
-        }
-
-        function getRarityOdds(luckLevel = shopState.lootLuckLevel){
-            const weightedItems = lootTable.filter((item) => Number.isFinite(Number(item.weight)) && Number(item.weight) > 0);
-            const totalWeight = weightedItems.reduce((sum, item) => sum + getLuckAdjustedWeight(item, luckLevel), 0);
-            return Object.keys(balanceConfig.rarityLuckIndex).reduce((odds, rarity) => {
-                const rarityWeight = weightedItems
-                    .filter((item) => item.rarity === rarity)
-                    .reduce((sum, item) => sum + getLuckAdjustedWeight(item, luckLevel), 0);
-                odds[rarity] = totalWeight > 0 ? rarityWeight / totalWeight : 0;
-                return odds;
-            }, {});
+            const podMultiplier = pod ? pod.rarityMultipliers[item.rarity] : 1;
+            const luckScale = pod ? pod.luckScale : 1;
+            return item.weight * podMultiplier * Math.pow(balanceConfig.luckWeightStep, luckLevel * rarityIndex * luckScale);
         }
 
         function getItemBossDamagePerSecond(){
@@ -1128,13 +1309,11 @@
         }
 
         function renderInventoryDamage(){
-            for (const inventoryItem of inventoryItems.values()){
-                inventoryItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(inventoryItem.item) * inventoryItem.quantity)}/s`;
-            }
+            sortInventory();
         }
 
         function getTotalBossDamagePerSecond(){
-            return getItemBossDamagePerSecond() * getItemDamageMultiplier() + getAutoTapDamagePerSecond();
+            return getItemBossDamagePerSecond() * getItemDamageMultiplier();
         }
 
         function renderProgression(){
@@ -1215,10 +1394,37 @@
             }
         });
         closeLootModal.addEventListener("click", () => lootModal.close());
+        viewAllInventory.addEventListener("click", () => inventoryModal.showModal());
+        closeInventoryModal.addEventListener("click", () => inventoryModal.close());
+        collectionProgressButton.addEventListener("click", () => collectionModal.showModal());
+        closeCollectionModal.addEventListener("click", () => collectionModal.close());
+        const podPreviews = [...document.querySelectorAll(".podPreview")];
+        const closePodOddsPreviews = () => {
+            podPreviews.forEach((preview) => {
+                delete preview.dataset.oddsOpen;
+                const image = preview.querySelector(".podImage");
+                image.setAttribute("aria-expanded", "false");
+                image.blur();
+            });
+        };
+        podPreviews.forEach((preview) => {
+            const image = preview.querySelector(".podImage");
+            image.addEventListener("click", () => {
+                const shouldOpen = preview.dataset.oddsOpen !== "true";
+                closePodOddsPreviews();
+                if (shouldOpen){
+                    preview.dataset.oddsOpen = "true";
+                    image.setAttribute("aria-expanded", "true");
+                }
+            });
+        });
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest(".podPreview")){
+                closePodOddsPreviews();
+            }
+        });
         sellLoot.addEventListener("click", sellSelectedItem);
         sellAllLoot.addEventListener("click", sellAllSelectedLoot);
-        statsButton.addEventListener("click", showPlayerStats);
-        closeStatsModal.addEventListener("click", () => statsModal.close());
         resetProgress.addEventListener("click", resetAllProgress);
         adminAddCoins.addEventListener("click", () => {
             playerGold += 100;
@@ -1232,9 +1438,14 @@
                 lootModal.close();
             }
         });
-        statsModal.addEventListener("click", (event) => {
-            if (event.target === statsModal){
-                statsModal.close();
+        inventoryModal.addEventListener("click", (event) => {
+            if (event.target === inventoryModal){
+                inventoryModal.close();
+            }
+        });
+        collectionModal.addEventListener("click", (event) => {
+            if (event.target === collectionModal){
+                collectionModal.close();
             }
         });
 
@@ -1243,13 +1454,16 @@
             const isCritical = Math.random() < shopState.critChance * 0.05;
             const damage = getTapDamage() * (isCritical ? 2 : 1);
             progressState.tapCoinRemainder += 1;
-            const tapCoinsEarned = Math.floor(progressState.tapCoinRemainder / balanceConfig.manualTapsPerCoin);
+            const coinPayouts = Math.floor(progressState.tapCoinRemainder / balanceConfig.manualTapsPerCoin);
             progressState.tapCoinRemainder %= balanceConfig.manualTapsPerCoin;
+            const tapCoinsEarned = coinPayouts * getTapCoinPayout();
             if (tapCoinsEarned > 0){
                 playerGold += tapCoinsEarned;
                 saveGold();
             }
-            const coinFeedback = tapCoinsEarned > 0 ? `, +${tapCoinsEarned} coin` : "";
+            const coinFeedback = tapCoinsEarned > 0
+                ? `, +${tapCoinsEarned} ${tapCoinsEarned === 1 ? "coin" : "coins"}`
+                : "";
             if (isCritical){
                 progressState.criticalHits += 1;
                 tapFeedback.textContent = `Critical hit! ${damage} damage${coinFeedback}`;
@@ -1397,16 +1611,33 @@
                     return;
                 }
 
-                if (upgrade.stateKey === "autoTap"){
-                    shopState.autoTap = true;
-                } else {
-                    shopState[upgrade.stateKey] = level + 1;
-                }
+                shopState[upgrade.stateKey] = level + 1;
                 playerGold -= cost;
                 saveGold();
                 saveShop();
                 updateShopButtons();
                 shopStatus.textContent = `Purchased ${upgrade.name}.`;
+                return;
+            }
+
+            const pod = podConfig[itemId];
+            if (pod){
+                if (progressState.level < pod.unlockLevel){
+                    shopStatus.textContent = `Unlocks at Player Level ${pod.unlockLevel}.`;
+                    return;
+                }
+                if (playerGold < pod.price){
+                    shopStatus.textContent = `You need ${pod.price - playerGold} more coins.`;
+                    return;
+                }
+
+                playerGold -= pod.price;
+                saveGold();
+                const item = pickRandomLoot(itemId);
+                const isNew = !progressState.uniqueItems.includes(item.name);
+                addToInventory(item);
+                showLootModal(item, false, isNew, true);
+                shopStatus.textContent = `Opened ${pod.name}.`;
                 return;
             }
 
@@ -1465,7 +1696,18 @@
 
         function updateShopButtons(){
             renderUpgradeShop();
+            renderPodOdds();
             shopButtons.forEach((button) => {
+                const pod = podConfig[button.dataset.shopItem];
+                if (pod){
+                    const locked = progressState.level < pod.unlockLevel;
+                    button.textContent = locked
+                        ? `Unlocks at Player Level ${pod.unlockLevel}`
+                        : `Open for ${pod.price.toLocaleString("en-US")} coins`;
+                    button.disabled = locked;
+                    return;
+                }
+
                 const item = shopItems[button.dataset.shopItem];
                 if (item.cosmetic && ownsCosmetic(item)){
                     const equipped = (item.type === "theme" && shopState.theme === item.cosmetic) ||
@@ -1487,32 +1729,75 @@
             damageDomer(getTotalBossDamagePerSecond() * elapsedSeconds);
         }, 100);
 
-        function pickRandomLoot(){
-            const weightedItems = lootTable.filter((item) => Number.isFinite(Number(item.weight)) && Number(item.weight) > 0);
-            const totalWeight = weightedItems.reduce((sum, item) => sum + getLuckAdjustedWeight(item), 0);
+        function pickRandomLoot(podId = null){
+            const pod = podId ? podConfig[podId] : null;
+            const weightedItems = getWeightedLootItems(pod);
+            const totalWeight = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
             let random = Math.random() * totalWeight;
 
-            for (const item of weightedItems){
-                random -= getLuckAdjustedWeight(item);
+            for (const entry of weightedItems){
+                random -= entry.weight;
                 if (random <= 0){
-                    return item;
+                    return entry.item;
                 }
             }
 
-            return weightedItems[weightedItems.length - 1];
+            return weightedItems[weightedItems.length - 1].item;
+        }
+
+        function getWeightedLootItems(pod){
+            const minimumRarityIndex = pod ? pod.minimumRarityIndex : 0;
+            return lootTable.filter((item) =>
+                Number.isFinite(Number(item.weight)) &&
+                Number(item.weight) > 0 &&
+                balanceConfig.rarityLuckIndex[item.rarity] >= minimumRarityIndex
+            ).map((item) => ({
+                item,
+                weight: getLuckAdjustedWeight(item, shopState.lootLuckLevel, pod)
+            })).filter((entry) => Number.isFinite(entry.weight) && entry.weight > 0);
+        }
+
+        function renderPodOdds(){
+            document.querySelectorAll(".podOddsTooltip").forEach((tooltip) => {
+                const pod = podConfig[tooltip.dataset.podId];
+                const weightedItems = getWeightedLootItems(pod);
+                const totalWeight = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
+                const rarityWeights = new Map();
+
+                for (const entry of weightedItems){
+                    rarityWeights.set(entry.item.rarity, (rarityWeights.get(entry.item.rarity) || 0) + entry.weight);
+                }
+
+                const rows = [...rarityWeights.entries()]
+                    .sort(([firstRarity], [secondRarity]) => rarityOrder[firstRarity] - rarityOrder[secondRarity])
+                    .map(([rarity, weight]) => {
+                        const row = document.createElement("div");
+                        const name = document.createElement("span");
+                        const odds = document.createElement("strong");
+                        const rarityItem = lootTable.find((item) => item.rarity === rarity);
+
+                        row.className = "podOddsRow";
+                        name.textContent = `${rarity[0].toUpperCase()}${rarity.slice(1)}`;
+                        name.style.color = rarityItem.color;
+                        odds.textContent = `${(weight / totalWeight * 100).toFixed(2)}%`;
+                        row.append(name, odds);
+                        return row;
+                    });
+
+                tooltip.replaceChildren(...rows);
+            });
         }
 
         function addToInventory(item, quantity = 1, save = true){
             if (!progressState.uniqueItems.includes(item.name)){
                 progressState.uniqueItems.push(item.name);
+                renderCollectionProgress();
             }
 
             const existingItem = inventoryItems.get(item.name);
 
             if (existingItem){
                 existingItem.quantity += quantity;
-                existingItem.quantityElement.textContent = `x${existingItem.quantity}`;
-                existingItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(existingItem.item) * existingItem.quantity)}/s`;
                 sortInventory();
                 renderBossDamage();
                 if (save){
@@ -1521,6 +1806,19 @@
                 return;
             }
 
+            inventoryItems.set(item.name, {
+                quantity,
+                item
+            });
+            sortInventory();
+            renderBossDamage();
+            if (save){
+                saveInventory();
+            }
+        }
+
+        function createInventoryCard(inventoryItem){
+            const { item, quantity } = inventoryItem;
             const collectedItem = document.createElement("div");
             const collectedImage = document.createElement("img");
             const collectedInfo = document.createElement("div");
@@ -1542,19 +1840,7 @@
             collectedInfo.append(collectedName, collectedDamage);
             collectedItem.append(collectedImage, collectedInfo, collectedQuantity);
             collectedItem.addEventListener("click", () => showLootModal(item, true));
-            inventory.appendChild(collectedItem);
-            inventoryItems.set(item.name, {
-                quantity,
-                item,
-                element: collectedItem,
-                quantityElement: collectedQuantity,
-                damageElement: collectedDamage
-            });
-            sortInventory();
-            renderBossDamage();
-            if (save){
-                saveInventory();
-            }
+            return collectedItem;
         }
 
         function sortInventory(){
@@ -1568,9 +1854,8 @@
                 return first.item.name.localeCompare(second.item.name);
             });
 
-            for (const inventoryItem of sortedItems){
-                inventory.appendChild(inventoryItem.element);
-            }
+            inventory.replaceChildren(...sortedItems.slice(0, 5).map(createInventoryCard));
+            allInventory.replaceChildren(...sortedItems.map(createInventoryCard));
         }
 
         function saveInventory(){
@@ -1591,7 +1876,7 @@
 
         function saveGame(){
             localStorage.setItem(saveStorageKey, JSON.stringify({
-                version: 4,
+                version: saveVersion,
                 coins: playerGold,
                 shop: shopState,
                 progress: progressState,
@@ -1602,16 +1887,35 @@
             }));
         }
 
-        function showPlayerStats(){
-            statsPlayerLevel.textContent = progressState.level;
-            statsPlayerXp.textContent = `${formatGameNumber(progressState.xp)} / ${formatGameNumber(getXpRequired(progressState.level))}`;
-            statsBossDamage.textContent = `${formatGameNumber(getTotalBossDamagePerSecond())}/s`;
-            statsDomersKilled.textContent = progressState.totalMined;
-            statsGoberTaps.textContent = progressState.totalTaps;
-            statsUniqueItems.textContent = `${progressState.uniqueItems.length} / ${lootTable.length}`;
-            statsCriticalHits.textContent = progressState.criticalHits;
-            statsCoins.textContent = playerGold;
-            statsModal.showModal();
+        function renderCollectionProgress(){
+            const collectedItems = new Set(progressState.uniqueItems);
+            const rarities = Object.keys(rarityOrder).sort((first, second) => rarityOrder[first] - rarityOrder[second]);
+            const rows = rarities.map((rarity) => {
+                const rarityItems = lootTable.filter((item) => item.rarity === rarity);
+                const collectedCount = rarityItems.filter((item) => collectedItems.has(item.name)).length;
+                const rarityColor = rarityItems[0].color;
+                const row = document.createElement("tr");
+                const rarityCell = document.createElement("th");
+                const rarityLabel = document.createElement("span");
+                const swatch = document.createElement("span");
+                const countCell = document.createElement("td");
+
+                rarityCell.scope = "row";
+                rarityLabel.className = "collectionRarityLabel";
+                swatch.className = "collectionRaritySwatch";
+                swatch.style.backgroundColor = rarityColor;
+                swatch.setAttribute("aria-hidden", "true");
+                rarityLabel.append(swatch, `${rarity[0].toUpperCase()}${rarity.slice(1)}`);
+                rarityCell.append(rarityLabel);
+                countCell.textContent = `${collectedCount} / ${rarityItems.length}`;
+                row.append(rarityCell, countCell);
+                return row;
+            });
+            const collectedCount = lootTable.filter((item) => collectedItems.has(item.name)).length;
+            const completion = lootTable.length > 0 ? Math.round(collectedCount / lootTable.length * 100) : 0;
+
+            collectionLegendRows.replaceChildren(...rows);
+            collectionTotal.textContent = `${collectedCount} / ${lootTable.length} (${completion}%)`;
         }
 
         function todayKey(){
@@ -1691,7 +1995,7 @@
             }
         }
 
-        function showLootModal(item, fromInventory = false, isNew = false){
+        function showLootModal(item, fromInventory = false, isNew = false, animateReveal = false){
             selectedItem = item;
             lootModal.style.backgroundColor = item.color;
             lootImage.src = item.image;
@@ -1699,12 +2003,20 @@
             lootNew.hidden = !isNew;
             lootName.textContent = item.name;
             lootRarity.textContent = item.rarity;
+            lootArtist.textContent = item.artist;
             lootPrice.textContent = item.price;
             lootBossDamage.textContent = `+${formatGameNumber(getEffectiveItemAttackDamage(item))}/s`;
             sellLoot.textContent = `Sell for ${item.price} gold`;
             sellLoot.hidden = !fromInventory;
             sellAllLoot.hidden = !fromInventory;
             lootModal.showModal();
+            if (animateReveal && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+                lootModal.querySelector(".lootModalContent").animate([
+                    { opacity: 0, transform: "scale(0.88)" },
+                    { opacity: 1, transform: "scale(1.03)", offset: 0.75 },
+                    { opacity: 1, transform: "scale(1)" }
+                ], { duration: 500, easing: "cubic-bezier(0.2, 0.75, 0.25, 1)" });
+            }
         }
 
         function sellSelectedItem(){
@@ -1723,13 +2035,10 @@
             saveGold();
 
             if (inventoryItem.quantity === 0){
-                inventoryItem.element.remove();
                 inventoryItems.delete(selectedItem.name);
-            } else {
-                inventoryItem.quantityElement.textContent = `x${inventoryItem.quantity}`;
-                inventoryItem.damageElement.textContent = `Damage: +${formatGameNumber(getEffectiveItemAttackDamage(inventoryItem.item) * inventoryItem.quantity)}/s`;
             }
 
+            sortInventory();
             saveInventory();
             renderBossDamage();
             lootModal.close();
@@ -1748,8 +2057,8 @@
             }
 
             playerGold += getSellValue(selectedItem) * inventoryItem.quantity;
-            inventoryItem.element.remove();
             inventoryItems.delete(selectedItem.name);
+            sortInventory();
             saveGold();
             saveInventory();
             renderBossDamage();
@@ -1764,49 +2073,87 @@
         //adding loot 
         const lootTable = [
             //common
-            { name: "yellow baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/yellow_domer.png"},
-            { name: "blue baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/blue_domer.png"},
-            { name: "red baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/red_domer.png"},
-            { name: "radioactive domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/radioactive_domer.png"},
-            { name: "cool domer B)", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/cool_domer.png"},
-            { name: "normo", rarity: "common", price: 5, weight: 50, color: "lightgrey", image: "media/normo.png"},
+            { name: "yellow baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/yellow_domer.png"},
+            { name: "blue baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/blue_domer.png"},
+            { name: "red baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/red_domer.png"},
+            { name: "radioactive domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/radioactive_domer.png"},
+            { name: "cool domer B)", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/cool_domer.png"},
+            { name: "normo", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Wilma", image: "media/normo.png"},
+            { name: "invermer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/invermer.png"},
+            { name: "pixmer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/pixmer.png"},
+            { name: "stoner", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/stoner.png"},
+            { name: "swirlmer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/swirlmer.png"},
+            { name: "womber", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/womber.png"},
+            { name: "wormer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/wormer.png"},
+            { name: "pink baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/pink_domer.png"},
+            { name: "smoker", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/smoker.png"},
 
             //uncommon
-            { name: "bart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/bart.png"},
-            { name: "blart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/blart.png"},
-            { name: "bar", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/bar.png"},
-            { name: "cromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/cromer.png"},
-            { name: "dooker", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/dooker.png"},
-            { name: "adolmer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/adolmer.png"},
-            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/sidedome_bob.png"},
-            { name: "homer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/homer.png"},
-            { name: "mini domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/mini_domer.png"},
-            { name: "lollibart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", image: "media/lollibart.png"},
+            { name: "bart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/bart.png"},
+            { name: "blart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/blart.png"},
+            { name: "bar", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/bar.png"},
+            { name: "cromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/cromer.png"},
+            { name: "dooker", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/dooker.png"},
+            { name: "adolmer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/adolmer.png"},
+            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/sidedome_bob.png"},
+            { name: "homer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/homer.png"},
+            { name: "mini domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/mini_domer.png"},
+            { name: "lollibart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Wilma", image: "media/lollibart.png"},
+            { name: "conjoined domers", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/conjoined_domers.png"},
+            { name: "dom dom dohur", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/dom_dom_dohur.png"},
+            { name: "mildomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/mildomer.png"},
+            { name: "neon domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/neon_domer.png"},
+            { name: "piromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/piromer.png"},
+            { name: "ghomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/ghomer.png"},
+            { name: "pipodomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/pipodomer.png"},
 
 
             //rare
-            { name: "remod", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/remod.png"},
-            { name: "boner", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/boner.png"},
-            { name: "lingling", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/lingling.png"},
-            { name: "bromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/bromer.png"},
-            { name: "astromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/astromer.png"},
-            { name: "hoger", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/hoger.png"},
-            { name: "dinomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/dinomer.png"},
-            { name: "galaxydomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", image: "media/galaxydomer.png"},
+            { name: "remod", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/remod.png"},
+            { name: "boner", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/boner.png"},
+            { name: "lingling", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/lingling.png"},
+            { name: "bromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/bromer.png"},
+            { name: "astromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/astromer.png"},
+            { name: "hoger", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/hoger.png"},
+            { name: "dinomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/dinomer.png"},
+            { name: "galaxydomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/galaxydomer.png"},
+            { name: "ginger bread domer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/ginger_bread_domer.png"},
+            { name: "miniomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/miniomer.png"},
+            { name: "finnmer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/finnmer.png"},
+            { name: "domerchu", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/domerchu.png"},
+            { name: "potmer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/potmer.png"},
+            { name: "prisomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/prisomer.png"},
 
 
             //epic
-            { name: "glorbo", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/glorbo.png"},
-            { name: "chiller", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/legendary_domer.png"},
-            { name: "zzomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/zzomer.png"},
-            { name: "3domer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/3domer.png"},
-            { name: "domerman", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", image: "media/domerman.png"},
+            { name: "glorbo", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Wilma", image: "media/glorbo.png"},
+            { name: "chiller", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/legendary_domer.png"},
+            { name: "zzomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Wilma", image: "media/zzomer.png"},
+            { name: "3domer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/3domer.png"},
+            { name: "domerman", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domerman.png"},
+            { name: "dome in the wall", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/dome_in_the_wall.png"},
+            { name: "domerXP", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domerxp.png"},
+            { name: "doodlebort", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/doodlebort.png"},
+            { name: "susmer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/susmer.png"},
+            { name: "mimer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/mimer.png"},
+            { name: "legomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/legomer.png"},
+            { name: "domer griffin", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domer_griffin.png"},
+            { name: "doma chameleon", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/doma_chameleon.png"},
+            { name: "ugler", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/ugler.png"},
 
             //legendary
-            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", image: "media/claymer.png"},
-
+            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/claymer.png"},
+            { name: "blockmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/blockmer.png"},
+            { name: "bushmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/bushmer.png"},
+            { name: "domer rick", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/domer_rick.png"},
+            { name: "matrixmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/matrixmer.png"},
+            { name: "skeledomer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/skeledomer.png"},
+            { name: "trading card", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/trading_card.png"},
+            { name: "halonenomer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/halonenomer.png"},
+            
             //mythic
-            { name: "void domer", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", image: "media/domer.jpg"}
+            { name: "ERROR", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", artist: "Robin", image: "media/ERROR.jpg"},
+            { name: "sugoimer", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", artist: "Robin", image: "media/sugoimer.jpg"}
             
 
         ].map((item) => ({
@@ -1819,6 +2166,7 @@
         applySavedCosmetics();
         updateShopButtons();
         loadInventory();
+        renderCollectionProgress();
         renderBossDamage();
         saveGame();
     </script>
