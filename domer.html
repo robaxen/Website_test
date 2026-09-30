@@ -710,6 +710,11 @@
             border-radius: 3px;
         }
 
+        .collectionRarityOdds {
+            color: #607d7b;
+            font-weight: normal;
+        }
+
         #sellLoot {
             background: #b36b42;
         }
@@ -845,7 +850,7 @@
                             <img class="podImage" src="media/pod_rare.png" alt="Rare pod placeholder" tabindex="0" aria-expanded="false" aria-describedby="rarePodOdds">
                             <div class="podOddsTooltip" id="rarePodOdds" data-pod-id="rarePod" role="tooltip"></div>
                         </div>
-                        <button class="shopButton" data-shop-item="rarePod" type="button">Open for 600 coins</button>
+                        <button class="shopButton" data-shop-item="rarePod" type="button">Open for 1,500 coins</button>
                     </article>
                     <article class="shopItem">
                         <h3>Void Pod</h3>
@@ -1055,7 +1060,7 @@
             },
             rarePod: {
                 name: "Rare Pod",
-                price: 600,
+                price: 1500,
                 unlockLevel: 20,
                 minimumRarityIndex: 1,
                 luckScale: 1,
@@ -1396,7 +1401,10 @@
         closeLootModal.addEventListener("click", () => lootModal.close());
         viewAllInventory.addEventListener("click", () => inventoryModal.showModal());
         closeInventoryModal.addEventListener("click", () => inventoryModal.close());
-        collectionProgressButton.addEventListener("click", () => collectionModal.showModal());
+        collectionProgressButton.addEventListener("click", () => {
+            renderCollectionProgress();
+            collectionModal.showModal();
+        });
         closeCollectionModal.addEventListener("click", () => collectionModal.close());
         const podPreviews = [...document.querySelectorAll(".podPreview")];
         const closePodOddsPreviews = () => {
@@ -1890,6 +1898,14 @@
         function renderCollectionProgress(){
             const collectedItems = new Set(progressState.uniqueItems);
             const rarities = Object.keys(rarityOrder).sort((first, second) => rarityOrder[first] - rarityOrder[second]);
+            const weightedItems = getWeightedLootItems(null);
+            const totalWeight = weightedItems.reduce((sum, entry) => sum + entry.weight, 0);
+            const rarityWeights = new Map();
+
+            for (const entry of weightedItems){
+                rarityWeights.set(entry.item.rarity, (rarityWeights.get(entry.item.rarity) || 0) + entry.weight);
+            }
+
             const rows = rarities.map((rarity) => {
                 const rarityItems = lootTable.filter((item) => item.rarity === rarity);
                 const collectedCount = rarityItems.filter((item) => collectedItems.has(item.name)).length;
@@ -1898,6 +1914,7 @@
                 const rarityCell = document.createElement("th");
                 const rarityLabel = document.createElement("span");
                 const swatch = document.createElement("span");
+                const odds = document.createElement("span");
                 const countCell = document.createElement("td");
 
                 rarityCell.scope = "row";
@@ -1905,7 +1922,9 @@
                 swatch.className = "collectionRaritySwatch";
                 swatch.style.backgroundColor = rarityColor;
                 swatch.setAttribute("aria-hidden", "true");
-                rarityLabel.append(swatch, `${rarity[0].toUpperCase()}${rarity.slice(1)}`);
+                odds.className = "collectionRarityOdds";
+                odds.textContent = `${((rarityWeights.get(rarity) || 0) / totalWeight * 100).toFixed(2)}%`;
+                rarityLabel.append(swatch, `${rarity[0].toUpperCase()}${rarity.slice(1)}`, odds);
                 rarityCell.append(rarityLabel);
                 countCell.textContent = `${collectedCount} / ${rarityItems.length}`;
                 row.append(rarityCell, countCell);
