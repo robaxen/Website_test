@@ -1286,7 +1286,7 @@
 
         function getBossBountyReward(bossLevel = currentBossLevel){
             const levelReward = 1 + (normalizePlayerLevel(bossLevel) - 1) * balanceConfig.bossBountyLevelScaling;
-            const upgradeReward = 1 + shopState.bossBountyLevel * balanceConfig.bountyBonusPerLevel;
+            const upgradeReward = Math.pow(1 + balanceConfig.bountyBonusPerLevel, shopState.bossBountyLevel);
             return Math.floor(balanceConfig.baseBossBounty * levelReward * upgradeReward);
         }
 
