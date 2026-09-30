@@ -668,7 +668,8 @@
             color: #607d7b;
         }
 
-        #collectionProgressButton {
+        #collectionProgressButton,
+        #playerStatsButton {
             display: block;
             margin: 12px auto 0;
             padding: 8px 14px;
@@ -682,6 +683,39 @@
             width: min(calc(100% - 32px), 420px);
             max-height: min(85vh, 700px);
             overflow-y: auto;
+        }
+
+        #playerStatsButton {
+            margin-top: 8px;
+        }
+
+        #playerStatsModal {
+            width: min(calc(100% - 32px), 480px);
+        }
+
+        .playerStats {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .playerStat {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 12px;
+            background: #edf5f1;
+            border-radius: 6px;
+        }
+
+        .playerStat dt {
+            color: #607d7b;
+        }
+
+        .playerStat dd {
+            margin: 0;
+            text-align: right;
+            font-weight: bold;
         }
 
         #collectionTable {
@@ -802,7 +836,7 @@
             background: var(--theme-button);
         }
 
-        body[class*="theme-"] #collectionProgressButton {
+        body[class*="theme-"] :is(#collectionProgressButton, #playerStatsButton) {
             color: #fffdf9;
             background: var(--theme-button);
             border-color: var(--theme-button-hover);
@@ -820,6 +854,7 @@
             <progress id="xpProgress" max="100" value="0" aria-label="Experience toward next level"></progress>
         </div>
         <button id="collectionProgressButton" type="button">Collection progress</button>
+        <button id="playerStatsButton" type="button">Player stats</button>
     </header>
 
     <div class="main">
@@ -1020,6 +1055,23 @@
         </div>
     </dialog>
 
+    <dialog id="playerStatsModal" aria-labelledby="playerStatsModalTitle">
+        <div class="inventoryModalContent">
+            <div class="inventoryModalHeader">
+                <h2 id="playerStatsModalTitle">Player stats</h2>
+                <button id="closePlayerStatsModal" type="button">Close</button>
+            </div>
+            <dl class="playerStats">
+                <div class="playerStat"><dt>Total collection progress</dt><dd id="statsCollectionProgress">0 / 0 (0%)</dd></div>
+                <div class="playerStat"><dt>Total taps</dt><dd id="statsTotalTaps">0</dd></div>
+                <div class="playerStat"><dt>Bosses killed</dt><dd id="statsBossesKilled">0</dd></div>
+                <div class="playerStat"><dt>Current inventory damage</dt><dd id="statsInventoryDamage">0/s</dd></div>
+                <div class="playerStat"><dt>Current tap damage</dt><dd id="statsTapDamage">0</dd></div>
+                <div class="playerStat"><dt>Total coins collected</dt><dd id="statsCoinsCollected">0</dd></div>
+            </dl>
+        </div>
+    </dialog>
+
     <script>
         const maxHealth = 100;
         const balanceConfig = {
@@ -1125,6 +1177,8 @@
         const defaultProgressState = {
             totalMined: 0,
             totalTaps: 0,
+            bossesKilled: 0,
+            totalCoinsCollected: 0,
             tapCoinRemainder: 0,
             criticalHits: 0,
             uniqueItems: [],
@@ -1159,6 +1213,12 @@
             ...defaultProgressState,
             totalMined: Number(savedProgress.totalMined) || 0,
             totalTaps: Number(savedProgress.totalTaps) || 0,
+            bossesKilled: Number.isFinite(Number(savedProgress.bossesKilled))
+                ? Math.max(0, Math.floor(Number(savedProgress.bossesKilled)))
+                : Number(savedProgress.totalMined) || 0,
+            totalCoinsCollected: Number.isFinite(Number(savedProgress.totalCoinsCollected))
+                ? Math.max(0, Number(savedProgress.totalCoinsCollected))
+                : playerGold,
             tapCoinRemainder: Number.isFinite(Number(savedProgress.tapCoinRemainder))
                 ? Math.max(0, Math.floor(Number(savedProgress.tapCoinRemainder))) % balanceConfig.manualTapsPerCoin
                 : 0,
@@ -1219,6 +1279,15 @@
         const collectionProgressButton = document.getElementById("collectionProgressButton");
         const collectionModal = document.getElementById("collectionModal");
         const closeCollectionModal = document.getElementById("closeCollectionModal");
+        const playerStatsButton = document.getElementById("playerStatsButton");
+        const playerStatsModal = document.getElementById("playerStatsModal");
+        const closePlayerStatsModal = document.getElementById("closePlayerStatsModal");
+        const statsCollectionProgress = document.getElementById("statsCollectionProgress");
+        const statsTotalTaps = document.getElementById("statsTotalTaps");
+        const statsBossesKilled = document.getElementById("statsBossesKilled");
+        const statsInventoryDamage = document.getElementById("statsInventoryDamage");
+        const statsTapDamage = document.getElementById("statsTapDamage");
+        const statsCoinsCollected = document.getElementById("statsCoinsCollected");
         const adminTools = document.getElementById("adminTools");
         const adminAddCoins = document.getElementById("adminAddCoins");
         const resetProgress = document.getElementById("resetProgress");
@@ -1392,7 +1461,7 @@
             )));
             const bounty = getBossBountyReward(defeatedLevel);
             progressState.xp += reward;
-            playerGold += bounty;
+            awardCoins(bounty);
             let levelsGained = 0;
 
             while (progressState.xp >= getXpRequired(progressState.level)){
@@ -1405,7 +1474,6 @@
             }
 
             renderProgression();
-            saveGold();
             updateShopButtons();
             tapFeedback.textContent = levelsGained > 0
                 ? `Boss defeated! +${reward} XP, +${bounty} coins. Level ${progressState.level}!`
@@ -1442,6 +1510,11 @@
             collectionModal.showModal();
         });
         closeCollectionModal.addEventListener("click", () => collectionModal.close());
+        playerStatsButton.addEventListener("click", () => {
+            renderPlayerStats();
+            playerStatsModal.showModal();
+        });
+        closePlayerStatsModal.addEventListener("click", () => playerStatsModal.close());
         const podPreviews = [...document.querySelectorAll(".podPreview")];
         const closePodOddsPreviews = () => {
             podPreviews.forEach((preview) => {
@@ -1471,8 +1544,7 @@
         sellAllLoot.addEventListener("click", sellAllSelectedLoot);
         resetProgress.addEventListener("click", resetAllProgress);
         adminAddCoins.addEventListener("click", () => {
-            playerGold += 100;
-            saveGold();
+            awardCoins(100);
         });
         adminGetLoot.addEventListener("click", () => getRandomLoot(true));
         simulateRarities.addEventListener("click", runRaritySimulation);
@@ -1502,8 +1574,7 @@
             progressState.tapCoinRemainder %= balanceConfig.manualTapsPerCoin;
             const tapCoinsEarned = coinPayouts * getTapCoinPayout();
             if (tapCoinsEarned > 0){
-                playerGold += tapCoinsEarned;
-                saveGold();
+                awardCoins(tapCoinsEarned);
             }
             const coinFeedback = tapCoinsEarned > 0
                 ? `, +${tapCoinsEarned} ${tapCoinsEarned === 1 ? "coin" : "coins"}`
@@ -1529,6 +1600,7 @@
             if (health === 0){
                 if (!bossRewarded){
                     bossRewarded = true;
+                    progressState.bossesKilled += 1;
                     awardBossExperience(currentBossLevel);
                 }
                 buttonGober.disabled = true;
@@ -1551,8 +1623,7 @@
             }
 
             const coinsEarned = getTapCoinPayout();
-            playerGold += coinsEarned;
-            saveGold();
+            awardCoins(coinsEarned);
             tapFeedback.textContent = `Item damage bonus: +${coinsEarned} ${coinsEarned === 1 ? "coin" : "coins"}`;
         }
 
@@ -1960,6 +2031,16 @@
             updateShopButtons();
         }
 
+        function awardCoins(amount){
+            if (!Number.isFinite(amount) || amount <= 0){
+                return;
+            }
+
+            playerGold += amount;
+            progressState.totalCoinsCollected += amount;
+            saveGold();
+        }
+
         function saveGame(){
             localStorage.setItem(saveStorageKey, JSON.stringify({
                 version: saveVersion,
@@ -2015,6 +2096,19 @@
             collectionTotal.textContent = `${collectedCount} / ${lootTable.length} (${completion}%)`;
         }
 
+        function renderPlayerStats(){
+            const collectedItems = new Set(progressState.uniqueItems);
+            const collectedCount = lootTable.filter((item) => collectedItems.has(item.name)).length;
+            const completion = lootTable.length > 0 ? Math.round(collectedCount / lootTable.length * 100) : 0;
+
+            statsCollectionProgress.textContent = `${collectedCount} / ${lootTable.length} (${completion}%)`;
+            statsTotalTaps.textContent = progressState.totalTaps.toLocaleString("en-US");
+            statsBossesKilled.textContent = progressState.bossesKilled.toLocaleString("en-US");
+            statsInventoryDamage.textContent = `${formatGameNumber(getTotalBossDamagePerSecond())}/s`;
+            statsTapDamage.textContent = formatGameNumber(getTapDamage());
+            statsCoinsCollected.textContent = Math.floor(progressState.totalCoinsCollected).toLocaleString("en-US");
+        }
+
         function todayKey(){
             return new Date().toISOString().slice(0, 10);
         }
@@ -2042,8 +2136,7 @@
             }
 
             progressState.dailyClaimed = true;
-            playerGold += 100;
-            saveGold();
+            awardCoins(100);
             renderDailyMission();
             tapFeedback.textContent = "Daily mission complete! +100 coins";
             saveGame();
@@ -2144,8 +2237,7 @@
             }
 
             inventoryItem.quantity -= 1;
-            playerGold += getSellValue(selectedItem);
-            saveGold();
+            awardCoins(getSellValue(selectedItem));
 
             if (inventoryItem.quantity === 0){
                 inventoryItems.delete(selectedItem.name);
@@ -2169,10 +2261,9 @@
                 return;
             }
 
-            playerGold += getSellValue(selectedItem) * inventoryItem.quantity;
+            awardCoins(getSellValue(selectedItem) * inventoryItem.quantity);
             inventoryItems.delete(selectedItem.name);
             sortInventory();
-            saveGold();
             saveInventory();
             renderBossDamage();
             lootModal.close();
