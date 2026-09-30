@@ -1920,6 +1920,13 @@
                     return rarityDifference;
                 }
 
+                if (first.item.name === "sugoimer" && second.item.name === "ERROR"){
+                    return -1;
+                }
+                if (first.item.name === "ERROR" && second.item.name === "sugoimer"){
+                    return 1;
+                }
+
                 return first.item.name.localeCompare(second.item.name);
             });
 
