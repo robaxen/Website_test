@@ -331,6 +331,12 @@
 
         .clickerArea > img {
             margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .clickerArea > img:focus-visible {
+            outline: 3px solid #1f4d4a;
+            outline-offset: 3px;
         }
 
         #bossHealthTrack {
@@ -882,7 +888,7 @@
     <div class="main">
         <div class="gameLayout">
             <div class="clickerArea">
-                <img src="media/domer.jpg" alt="Domer">
+                <img id="bossImage" src="media/domer.jpg" alt="Domer" role="button" tabindex="0" aria-label="Attack Domer" aria-disabled="false">
                 <div id="bossHealthTrack" role="progressbar" aria-label="Boss health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
                     <div id="bossHealthFill"></div>
                 </div>
@@ -1283,6 +1289,7 @@
         currentBossLevel = progressState.level;
         health = getBossMaxHealth(currentBossLevel);
         const healthBar = document.getElementById("healthBar");
+        const bossImage = document.getElementById("bossImage");
         const bossHealthTrack = document.getElementById("bossHealthTrack");
         const bossHealthFill = document.getElementById("bossHealthFill");
         const bossLevelLabel = document.getElementById("bossLevelLabel");
@@ -1503,6 +1510,7 @@
             health = getBossMaxHealth(currentBossLevel);
             bossRewarded = false;
             buttonGober.disabled = false;
+            bossImage.setAttribute("aria-disabled", "false");
             buttonGetLoot.disabled = true;
             renderBoss();
         }
@@ -1548,6 +1556,13 @@
         renderBossDamage();
 
         buttonGober.addEventListener("click", goberMine);
+        bossImage.addEventListener("click", goberMine);
+        bossImage.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " "){
+                event.preventDefault();
+                goberMine();
+            }
+        });
         buttonGetLoot.addEventListener("click", getRandomLoot);
         shopButtons.forEach((button) => button.addEventListener("click", () => buyShopItem(button.dataset.shopItem)));
         shopUpgradeCategories.addEventListener("click", (event) => {
@@ -1645,6 +1660,10 @@
         });
 
         function goberMine(){
+            if (health <= 0){
+                return;
+            }
+
             progressState.totalTaps += 1;
             const isCritical = Math.random() < shopState.critChance * 0.05;
             const damage = getTapDamage() * (isCritical ? 2 : 1);
@@ -1683,6 +1702,7 @@
                     awardBossExperience(currentBossLevel);
                 }
                 buttonGober.disabled = true;
+                bossImage.setAttribute("aria-disabled", "true");
                 buttonGetLoot.disabled = false;
             }
         }
