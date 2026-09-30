@@ -1881,7 +1881,7 @@
             }
         }
 
-        function createInventoryCard(inventoryItem){
+        function createInventoryCard(inventoryItem, showQuantity = true){
             const { item, quantity } = inventoryItem;
             const collectedItem = document.createElement("div");
             const collectedImage = document.createElement("img");
@@ -1902,7 +1902,10 @@
             collectedQuantity.className = "inventoryQuantity";
             collectedQuantity.textContent = `x${quantity}`;
             collectedInfo.append(collectedName, collectedDamage);
-            collectedItem.append(collectedImage, collectedInfo, collectedQuantity);
+            collectedItem.append(collectedImage, collectedInfo);
+            if (showQuantity){
+                collectedItem.append(collectedQuantity);
+            }
             collectedItem.addEventListener("click", () => showLootModal(item, true));
             return collectedItem;
         }
@@ -1918,8 +1921,18 @@
                 return first.item.name.localeCompare(second.item.name);
             });
 
-            inventory.replaceChildren(...sortedItems.slice(0, 5).map(createInventoryCard));
-            allInventory.replaceChildren(...sortedItems.map(createInventoryCard));
+            const mainPageItems = [];
+            for (const { item, quantity } of sortedItems){
+                for (let copyIndex = 0; copyIndex < quantity && mainPageItems.length < 5; copyIndex += 1){
+                    mainPageItems.push({ item, quantity: 1 });
+                }
+                if (mainPageItems.length === 5){
+                    break;
+                }
+            }
+
+            inventory.replaceChildren(...mainPageItems.map((inventoryItem) => createInventoryCard(inventoryItem, false)));
+            allInventory.replaceChildren(...sortedItems.map((inventoryItem) => createInventoryCard(inventoryItem)));
         }
 
         function saveInventory(){
