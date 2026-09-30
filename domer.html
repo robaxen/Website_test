@@ -589,6 +589,14 @@
             font-weight: normal;
         }
 
+        .inventoryItem[data-rarity="transcendent"] {
+            color: #fff;
+        }
+
+        .inventoryItem[data-rarity="transcendent"] .inventoryItemDamage {
+            color: rgb(255 255 255 / 75%);
+        }
+
         .inventoryItem:hover {
             filter: brightness(0.96);
             transform: translateY(-1px);
@@ -666,6 +674,20 @@
 
         .lootStat span:first-child {
             color: #607d7b;
+        }
+
+        #lootModal[data-rarity="transcendent"] {
+            color: #fff;
+        }
+
+        #lootModal[data-rarity="transcendent"] #lootName,
+        #lootModal[data-rarity="transcendent"] #lootNew,
+        #lootModal[data-rarity="transcendent"] .lootStat span:first-child {
+            color: #fff;
+        }
+
+        #lootModal[data-rarity="transcendent"] .lootStat {
+            background: rgb(255 255 255 / 12%);
         }
 
         #collectionProgressButton,
@@ -914,7 +936,7 @@
                     <article class="shopItem">
                         <h3>Void Pod</h3>
                         <div class="podPreview">
-                            <img class="podImage" src="media/pod_premium.png" alt="Legendary and Mythic pod placeholder" tabindex="0" aria-expanded="false" aria-describedby="premiumPodOdds">
+                            <img class="podImage" src="media/pod_premium.png" alt="Premium pod placeholder for rare and higher domers" tabindex="0" aria-expanded="false" aria-describedby="premiumPodOdds">
                             <div class="podOddsTooltip" id="premiumPodOdds" data-pod-id="premiumPod" role="tooltip"></div>
                         </div>
                         <button class="shopButton" data-shop-item="premiumPod" type="button">Open for 6,000 coins</button>
@@ -983,6 +1005,8 @@
         <section id="adminTools" hidden aria-labelledby="adminToolsTitle">
             <h2 id="adminToolsTitle">Admin tools</h2>
             <p class="shopIntro">Developer-only controls. Open this page with the #admin URL hash.</p>
+            <button id="adminUnlockEverything" type="button">Unlock everything</button>
+            <p id="adminToolsStatus" role="status"></p>
             <button id="adminAddCoins" type="button">Give 100 coins</button>
             <button id="resetProgress" type="button">Reset all progress</button>
             <button id="adminGetLoot" type="button">Get item now</button>
@@ -1086,11 +1110,13 @@
             baseItemAttackDamage: 0.6,
             rarityPullWeights: {
                 common: 71.5,
-                uncommon: 12.1,
-                rare: 6.05,
-                epic: 1.21,
-                legendary: 0.469,
-                mythic: 0.0605
+                uncommon: 10,
+                rare: 6.3,
+                epic: 1.3,
+                legendary: 0.36,
+                mythic: 0.13,
+                celestial: 0.03,
+                transcendent: 0.0045
             },
             rarityDamageMultipliers: {
                 common: 1,
@@ -1098,7 +1124,29 @@
                 rare: 8,
                 epic: 30,
                 legendary: 150,
-                mythic: 500
+                mythic: 500,
+                celestial: 1500,
+                transcendent: 5000
+            },
+            rarityPrices: {
+                common: 5,
+                uncommon: 10,
+                rare: 40,
+                epic: 200,
+                legendary: 400,
+                mythic: 2000,
+                celestial: 5000,
+                transcendent: 12000
+            },
+            rarityColors: {
+                common: "lightgrey",
+                uncommon: "lightgreen",
+                rare: "red",
+                epic: "#8642bd",
+                legendary: "#c8bb37",
+                mythic: "#00ff39",
+                celestial: "#00ffd4",
+                transcendent: "#23212b"
             },
             baseBossBounty: 20,
             bossBountyLevelScaling: 0.03,
@@ -1107,14 +1155,16 @@
             itemCoinPayoutRatePerDamage: 0.01,
             maxItemCoinPayoutRate: 0.05,
             itemDamageBonusPerLevel: 0.06,
-            luckWeightStep: 1.08,
+            luckWeightStep: 1.03,
             rarityLuckIndex: {
                 common: 0,
                 uncommon: 1,
                 rare: 2,
                 epic: 3,
                 legendary: 4,
-                mythic: 5
+                mythic: 5,
+                celestial: 6,
+                transcendent: 7
             },
             itemUpgradeScaling: 1.2,
             maxScaledValue: 1e12
@@ -1134,7 +1184,7 @@
                 unlockLevel: 1,
                 minimumRarityIndex: 0,
                 luckScale: 1,
-                rarityMultipliers: { common: 1, uncommon: 1, rare: 1, epic: 1, legendary: 1, mythic: 1 }
+                rarityMultipliers: { common: 1, uncommon: 1, rare: 1, epic: 1, legendary: 1, mythic: 1, celestial: 1, transcendent: 1 }
             },
             rarePod: {
                 name: "Rare Pod",
@@ -1142,7 +1192,7 @@
                 unlockLevel: 20,
                 minimumRarityIndex: 1,
                 luckScale: 1,
-                rarityMultipliers: { common: 0.55, uncommon: 0.65, rare: 2, epic: 2.8, legendary: 3.5, mythic: 3.5 }
+                rarityMultipliers: { common: 0.55, uncommon: 0.65, rare: 2, epic: 2.8, legendary: 3.5, mythic: 3.5, celestial: 4, transcendent: 3 }
             },
             premiumPod: {
                 name: "Void Pod",
@@ -1150,7 +1200,7 @@
                 unlockLevel: 50,
                 minimumRarityIndex: 2,
                 luckScale: 0.25,
-                rarityMultipliers: { common: 0.1, uncommon: 0.15, rare: 0.35, epic: 1.5, legendary: 1, mythic: 12 }
+                rarityMultipliers: { common: 0.1, uncommon: 0.15, rare: 0.35, epic: 1.5, legendary: 1, mythic: 12, celestial: 16, transcendent: 6 }
             }
         };
         var health = 0;
@@ -1253,12 +1303,14 @@
         const claimDailyMission = document.getElementById("claimDailyMission");
         const inventoryItems = new Map();
         const rarityOrder = {
-            mythic: 0,
-            legendary: 1,
-            epic: 2,
-            rare: 3,
-            uncommon: 4,
-            common: 5
+            transcendent: 0,
+            celestial: 1,
+            mythic: 2,
+            legendary: 3,
+            epic: 4,
+            rare: 5,
+            uncommon: 6,
+            common: 7
         };
         const lootModal = document.getElementById("lootModal");
         const lootImage = document.getElementById("lootImage");
@@ -1289,6 +1341,8 @@
         const statsTapDamage = document.getElementById("statsTapDamage");
         const statsCoinsCollected = document.getElementById("statsCoinsCollected");
         const adminTools = document.getElementById("adminTools");
+        const adminUnlockEverything = document.getElementById("adminUnlockEverything");
+        const adminToolsStatus = document.getElementById("adminToolsStatus");
         const adminAddCoins = document.getElementById("adminAddCoins");
         const resetProgress = document.getElementById("resetProgress");
         const adminGetLoot = document.getElementById("adminGetLoot");
@@ -1545,6 +1599,31 @@
         resetProgress.addEventListener("click", resetAllProgress);
         adminAddCoins.addEventListener("click", () => {
             awardCoins(100);
+        });
+        adminUnlockEverything.addEventListener("click", () => {
+            for (const upgrade of Object.values(shopUpgradeConfig)){
+                shopState[upgrade.stateKey] = upgrade.maxLevel;
+            }
+
+            shopState.cosmetics = [...new Set([...shopState.cosmetics, ...themeCosmetics, ...frameCosmetics])];
+            progressState.level = normalizePlayerLevel(Math.max(...Object.values(shopUpgradeConfig).map((upgrade) =>
+                getShopUpgradeUnlockLevel(upgrade, upgrade.maxLevel - 1)
+            )));
+            progressState.xp = 0;
+
+            for (const item of lootTable){
+                if (!inventoryItems.has(item.name)){
+                    addToInventory(item, 1, false);
+                }
+            }
+
+            renderProgression();
+            beginNextBoss();
+            renderCollectionProgress();
+            updateShopButtons();
+            saveShop();
+            saveInventory();
+            adminToolsStatus.textContent = `Everything unlocked at player level ${progressState.level}.`;
         });
         adminGetLoot.addEventListener("click", () => getRandomLoot(true));
         simulateRarities.addEventListener("click", runRaritySimulation);
@@ -1915,7 +1994,7 @@
 
                         row.className = "podOddsRow";
                         name.textContent = `${rarity[0].toUpperCase()}${rarity.slice(1)}`;
-                        name.style.color = rarityItem.color;
+                        name.style.color = rarity === "transcendent" ? "#fff" : rarityItem.color;
                         odds.textContent = `${(weight / totalWeight * 100).toFixed(2)}%`;
                         row.append(name, odds);
                         return row;
@@ -1964,6 +2043,7 @@
             const collectedQuantity = document.createElement("span");
 
             collectedItem.className = "inventoryItem";
+            collectedItem.dataset.rarity = item.rarity;
             collectedItem.style.backgroundColor = item.color;
             collectedImage.src = item.image;
             collectedImage.alt = item.name;
@@ -2155,7 +2235,7 @@
         }
 
         function runRaritySimulation(){
-            const rarities = ["common", "uncommon", "rare", "epic", "legendary", "mythic"];
+            const rarities = Object.keys(rarityOrder).sort((first, second) => rarityOrder[second] - rarityOrder[first]);
             const generations = 1000000;
             const results = rarities.reduce((counts, rarity) => {
                 counts[rarity] = 0;
@@ -2187,6 +2267,7 @@
 
         function showLootModal(item, fromInventory = false, isNew = false, animateReveal = false){
             selectedItem = item;
+            lootModal.dataset.rarity = item.rarity;
             lootModal.style.backgroundColor = item.color;
             const imageRequestId = ++lootImageRequestId;
             const imageUrl = new URL(item.image, document.baseURI).href;
@@ -2277,92 +2358,100 @@
         //adding loot 
         const lootTable = [
             //common
-            { name: "yellow baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/yellow_domer.png"},
-            { name: "blue baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/blue_domer.png"},
-            { name: "red baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/red_domer.png"},
-            { name: "radioactive domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/radioactive_domer.png"},
-            { name: "cool domer B)", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/cool_domer.png"},
-            { name: "normo", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Wilma", image: "media/normo.png"},
-            { name: "invermer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/invermer.png"},
-            { name: "pixmer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/pixmer.png"},
-            { name: "stoner", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/stoner.png"},
-            { name: "swirlmer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/swirlmer.png"},
-            { name: "womber", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/womber.png"},
-            { name: "wormer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/wormer.png"},
-            { name: "pink baby domer", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/pink_domer.png"},
-            { name: "smoker", rarity: "common", price: 5, weight: 50, color: "lightgrey", artist: "Robin", image: "media/smoker.png"},
+            { name: "yellow baby domer", rarity: "common", artist: "Robin", image: "media/yellow_domer.png"},
+            { name: "blue baby domer", rarity: "common", artist: "Robin", image: "media/blue_domer.png"},
+            { name: "red baby domer", rarity: "common", artist: "Robin", image: "media/red_domer.png"},
+            { name: "radioactive domer", rarity: "common", artist: "Robin", image: "media/radioactive_domer.png"},
+            { name: "cool domer B)", rarity: "common", artist: "Robin", image: "media/cool_domer.png"},
+            { name: "normo", rarity: "common", artist: "Wilma", image: "media/normo.png"},
+            { name: "invermer", rarity: "common", artist: "Robin", image: "media/invermer.png"},
+            { name: "pixmer", rarity: "common", artist: "Robin", image: "media/pixmer.png"},
+            { name: "stoner", rarity: "common", artist: "Robin", image: "media/stoner.png"},
+            { name: "swirlmer", rarity: "common", artist: "Robin", image: "media/swirlmer.png"},
+            { name: "womber", rarity: "common", artist: "Robin", image: "media/womber.png"},
+            { name: "wormer", rarity: "common", artist: "Robin", image: "media/wormer.png"},
+            { name: "pink baby domer", rarity: "common", artist: "Robin", image: "media/pink_domer.png"},
+            { name: "smoker", rarity: "common", artist: "Robin", image: "media/smoker.png"},
 
             //uncommon
-            { name: "bart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/bart.png"},
-            { name: "blart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/blart.png"},
-            { name: "bar", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/bar.png"},
-            { name: "cromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/cromer.png"},
-            { name: "dooker", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/dooker.png"},
-            { name: "adolmer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/adolmer.png"},
-            { name: "sidebome bob", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/sidedome_bob.png"},
-            { name: "homer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/homer.png"},
-            { name: "mini domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/mini_domer.png"},
-            { name: "lollibart", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Wilma", image: "media/lollibart.png"},
-            { name: "conjoined domers", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/conjoined_domers.png"},
-            { name: "dom dom dohur", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/dom_dom_dohur.png"},
-            { name: "mildomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/mildomer.png"},
-            { name: "neon domer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/neon_domer.png"},
-            { name: "piromer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/piromer.png"},
-            { name: "ghomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/ghomer.png"},
-            { name: "pipodomer", rarity: "uncommon", price: 10, weight: 25, color: "#f5dda2", artist: "Robin", image: "media/pipodomer.png"},
+            { name: "bart", rarity: "uncommon", artist: "Robin", image: "media/bart.png"},
+            { name: "blart", rarity: "uncommon", artist: "Robin", image: "media/blart.png"},
+            { name: "bar", rarity: "uncommon", artist: "Robin", image: "media/bar.png"},
+            { name: "cromer", rarity: "uncommon", artist: "Robin", image: "media/cromer.png"},
+            { name: "dooker", rarity: "uncommon", artist: "Robin", image: "media/dooker.png"},
+            { name: "adolmer", rarity: "uncommon", artist: "Robin", image: "media/adolmer.png"},
+            { name: "sidebome bob", rarity: "uncommon", artist: "Robin", image: "media/sidedome_bob.png"},
+            { name: "homer", rarity: "uncommon", artist: "Robin", image: "media/homer.png"},
+            { name: "mini domer", rarity: "uncommon", artist: "Robin", image: "media/mini_domer.png"},
+            { name: "lollibart", rarity: "uncommon", artist: "Wilma", image: "media/lollibart.png"},
+            { name: "dom dom dohur", rarity: "uncommon", artist: "Robin", image: "media/dom_dom_dohur.png"},
+            { name: "mildomer", rarity: "uncommon", artist: "Robin", image: "media/mildomer.png"},
+            { name: "neon domer", rarity: "uncommon", artist: "Robin", image: "media/neon_domer.png"},
+            { name: "piromer", rarity: "uncommon", artist: "Robin", image: "media/piromer.png"},
+            { name: "ghomer", rarity: "uncommon", artist: "Robin", image: "media/ghomer.png"},
+            { name: "pipodomer", rarity: "uncommon", artist: "Robin", image: "media/pipodomer.png"},
 
 
             //rare
-            { name: "remod", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/remod.png"},
-            { name: "boner", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/boner.png"},
-            { name: "lingling", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/lingling.png"},
-            { name: "bromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/bromer.png"},
-            { name: "astromer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/astromer.png"},
-            { name: "hoger", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/hoger.png"},
-            { name: "dinomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/dinomer.png"},
-            { name: "galaxydomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/galaxydomer.png"},
-            { name: "ginger bread domer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/ginger_bread_domer.png"},
-            { name: "miniomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/miniomer.png"},
-            { name: "finnmer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/finnmer.png"},
-            { name: "domerchu", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/domerchu.png"},
-            { name: "potmer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/potmer.png"},
-            { name: "prisomer", rarity: "rare", price: 40, weight: 10, color: "#D93232", artist: "Robin", image: "media/prisomer.png"},
-
-
-            //epic
-            { name: "glorbo", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Wilma", image: "media/glorbo.png"},
-            { name: "chiller", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/legendary_domer.png"},
-            { name: "zzomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Wilma", image: "media/zzomer.png"},
-            { name: "3domer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/3domer.png"},
-            { name: "domerman", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domerman.png"},
-            { name: "dome in the wall", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/dome_in_the_wall.png"},
-            { name: "domerXP", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domerxp.png"},
-            { name: "doodlebort", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/doodlebort.png"},
-            { name: "susmer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/susmer.png"},
-            { name: "mimer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/mimer.png"},
-            { name: "legomer", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/legomer.png"},
-            { name: "domer griffin", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/domer_griffin.png"},
-            { name: "doma chameleon", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/doma_chameleon.png"},
-            { name: "ugler", rarity: "epic", price: 200, weight: 3, color: "#ff00ba", artist: "Robin", image: "media/ugler.png"},
-
-            //legendary
-            { name: "claymer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/claymer.png"},
-            { name: "blockmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/blockmer.png"},
-            { name: "bushmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/bushmer.png"},
-            { name: "domer rick", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/domer_rick.png"},
-            { name: "matrixmer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/matrixmer.png"},
-            { name: "skeledomer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/skeledomer.png"},
-            { name: "trading card", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/trading_card.png"},
-            { name: "halonenomer", rarity: "legendary", price: 400, weight: 0.5, color: "#c1b33e", artist: "Robin", image: "media/halonenomer.png"},
+            { name: "remod", rarity: "rare", artist: "Robin", image: "media/remod.png"},
+            { name: "boner", rarity: "rare", artist: "Robin", image: "media/boner.png"},
+            { name: "lingling", rarity: "rare", artist: "Robin", image: "media/lingling.png"},
+            { name: "bromer", rarity: "rare", artist: "Robin", image: "media/bromer.png"},
+            { name: "astromer", rarity: "rare", artist: "Robin", image: "media/astromer.png"},
+            { name: "hoger", rarity: "rare", artist: "Robin", image: "media/hoger.png"},
+            { name: "conjoined domers", rarity: "rare", artist: "Robin", image: "media/conjoined_domers.png"},
+            { name: "prisomer", rarity: "rare", artist: "Robin", image: "media/prisomer.png"},
+            { name: "ugler", rarity: "rare", artist: "Robin", image: "media/ugler.png"},
             
-            //mythic lol
-            { name: "ERROR", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", artist: "Robin", image: "media/ERROR.png"},
-            { name: "sugoimer", rarity: "mythic", price: 2000, weight: 0.00605, color: "#22a6a1", artist: "Robin", image: "media/sugoimer.png"}
+            //epic
+            { name: "glorbo", rarity: "epic", artist: "Wilma", image: "media/glorbo.png"},
+            { name: "chiller", rarity: "epic", artist: "Robin", image: "media/legendary_domer.png"},
+            { name: "zzomer", rarity: "epic", artist: "Wilma", image: "media/zzomer.png"},
+            { name: "3domer", rarity: "epic", artist: "Robin", image: "media/3domer.png"},
+            { name: "domerman", rarity: "epic", artist: "Robin", image: "media/domerman.png"},
+            { name: "dome in the wall", rarity: "epic", artist: "Robin", image: "media/dome_in_the_wall.png"},
+            { name: "domer griffin", rarity: "epic", artist: "Robin", image: "media/domer_griffin.png"},
+            { name: "finnmer", rarity: "epic", artist: "Robin", image: "media/finnmer.png"},
+            { name: "miniomer", rarity: "epic", artist: "Robin", image: "media/miniomer.png"},
+            
+            //legendary
+            { name: "claymer", rarity: "legendary", artist: "Robin", image: "media/claymer.png"},
+            { name: "blockmer", rarity: "legendary", artist: "Robin", image: "media/blockmer.png"},
+            { name: "bushmer", rarity: "legendary", artist: "Robin", image: "media/bushmer.png"},
+            { name: "domer rick", rarity: "legendary", artist: "Robin", image: "media/domer_rick.png"},
+            { name: "matrixmer", rarity: "legendary", artist: "Robin", image: "media/matrixmer.png"},
+            { name: "skeledomer", rarity: "legendary", artist: "Robin", image: "media/skeledomer.png"},
+            { name: "halonenomer", rarity: "legendary", artist: "Robin", image: "media/halonenomer.png"},
+            { name: "potmer", rarity: "legendary", artist: "Robin", image: "media/potmer.png"},
+            { name: "dinomer", rarity: "legendary", artist: "Robin", image: "media/dinomer.png"},
+            
+            //mythic
+            
+            { name: "galaxydomer", rarity: "mythic", artist: "Robin", image: "media/galaxydomer.png"},
+            { name: "ginger bread domer", rarity: "mythic", artist: "Robin", image: "media/ginger_bread_domer.png"},
+            { name: "domerXP", rarity: "mythic", artist: "Robin", image: "media/domerxp.png"},
+            { name: "doodlebort", rarity: "mythic", artist: "Robin", image: "media/doodlebort.png"},
+            { name: "susmer", rarity: "mythic", artist: "Robin", image: "media/susmer.png"},
+            { name: "domerchu", rarity: "mythic", artist: "Robin", image: "media/domerchu.png"},
+
+            //Celestial
+            
+            { name: "doma chameleon", rarity: "celestial", artist: "Robin", image: "media/doma_chameleon.png"},
+            { name: "trading card", rarity: "celestial", artist: "Robin", image: "media/trading_card.png"},
+            { name: "mimer", rarity: "celestial", artist: "Robin", image: "media/mimer.png"},
+            { name: "legomer", rarity: "celestial", artist: "Robin", image: "media/legomer.png"},
+            { name: "ERROR", rarity: "celestial", artist: "Robin", image: "media/ERROR.png"},
+            
+            //Transcendent
+            { name: "sugoimer", rarity: "transcendent", artist: "Robin", image: "media/sugoimer.png"},
+            
             
 
         ].map((item) => ({
             ...item,
-            weight: balanceConfig.rarityPullWeights[item.rarity] ?? item.weight,
+            price: balanceConfig.rarityPrices[item.rarity],
+            color: balanceConfig.rarityColors[item.rarity],
+            weight: balanceConfig.rarityPullWeights[item.rarity],
             attackDamage: calculateItemAttackDamage(item),
             upgradeLevel: 0
         }));
