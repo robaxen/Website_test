@@ -1052,6 +1052,8 @@
             bossBountyLevelScaling: 0.03,
             bountyBonusPerLevel: 0.25,
             manualTapsPerCoin: 10,
+            itemCoinPayoutRatePerDamage: 0.01,
+            maxItemCoinPayoutRate: 0.05,
             itemDamageBonusPerLevel: 0.06,
             luckWeightStep: 1.08,
             rarityLuckIndex: {
@@ -1224,6 +1226,7 @@
         const simulateRarities = document.getElementById("simulateRarities");
         const adminRarityResults = document.getElementById("adminRarityResults");
         var selectedItem = null;
+        let lootImageRequestId = 0;
 
         function parseSave(value){
             try {
@@ -1531,6 +1534,26 @@
             }
         }
 
+        function tryAwardItemDamageCoins(damagePerSecond, elapsedSeconds){
+            if (health <= 0 || !Number.isFinite(damagePerSecond) || damagePerSecond <= 0){
+                return;
+            }
+
+            const payoutRate = Math.min(
+                damagePerSecond * balanceConfig.itemCoinPayoutRatePerDamage,
+                balanceConfig.maxItemCoinPayoutRate
+            );
+            const payoutChance = 1 - Math.exp(-payoutRate * elapsedSeconds);
+            if (Math.random() >= payoutChance){
+                return;
+            }
+
+            const coinsEarned = getTapCoinPayout();
+            playerGold += coinsEarned;
+            saveGold();
+            tapFeedback.textContent = `Item damage bonus: +${coinsEarned} ${coinsEarned === 1 ? "coin" : "coins"}`;
+        }
+
         function getRandomLoot(force = false){
             if (!force && health !== 0){
                 return;
@@ -1765,7 +1788,9 @@
             const now = performance.now();
             const elapsedSeconds = Math.min((now - lastCombatUpdate) / 1000, 1);
             lastCombatUpdate = now;
-            damageDomer(getTotalBossDamagePerSecond() * elapsedSeconds);
+            const itemDamagePerSecond = getTotalBossDamagePerSecond();
+            tryAwardItemDamageCoins(itemDamagePerSecond, elapsedSeconds);
+            damageDomer(itemDamagePerSecond * elapsedSeconds);
         }, 100);
 
         function pickRandomLoot(podId = null){
@@ -2048,8 +2073,24 @@
         function showLootModal(item, fromInventory = false, isNew = false, animateReveal = false){
             selectedItem = item;
             lootModal.style.backgroundColor = item.color;
-            lootImage.src = item.image;
+            const imageRequestId = ++lootImageRequestId;
+            const imageUrl = new URL(item.image, document.baseURI).href;
+            const imageAlreadyLoaded = lootImage.src === imageUrl && lootImage.complete && lootImage.naturalWidth > 0;
+            lootImage.style.visibility = imageAlreadyLoaded ? "visible" : "hidden";
             lootImage.alt = item.name;
+            if (!imageAlreadyLoaded){
+                lootImage.onload = () => {
+                    if (imageRequestId === lootImageRequestId){
+                        lootImage.style.visibility = "visible";
+                    }
+                };
+                lootImage.onerror = () => {
+                    if (imageRequestId === lootImageRequestId){
+                        lootImage.style.visibility = "visible";
+                    }
+                };
+                lootImage.src = imageUrl;
+            }
             lootNew.hidden = !isNew;
             lootName.textContent = item.name;
             lootRarity.textContent = item.rarity;
